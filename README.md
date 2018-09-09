@@ -113,6 +113,26 @@ assert_eq!("Hello", TEST[1]);
 assert_eq!("哈囉", TEST[2]);
 ```
 
+## Benchmark
+
+Using static mechanisms makes your program faster. See my benchmark result below (Intel i7-6700HQ, ran on 2018/09/10):
+
+```text
+running 9 tests
+test include_array_lazy_static   ... bench:          44 ns/iter (+/- 2)
+test include_array_native_static ... bench:          44 ns/iter (+/- 2)
+test include_array_no_static     ... bench:       8,470 ns/iter (+/- 568)
+test include_bytes_lazy_static   ... bench:         473 ns/iter (+/- 84)
+test include_bytes_native_static ... bench:         482 ns/iter (+/- 30)
+test include_bytes_no_static     ... bench:       7,247 ns/iter (+/- 1,183)
+test include_str_lazy_static     ... bench:         963 ns/iter (+/- 85)
+test include_str_native_static   ... bench:         970 ns/iter (+/- 76)
+test include_str_no_static       ... bench:       8,338 ns/iter (+/- 556)
+```
+
+This benchmark program is in `tests/benchmark.rs`.
+When using the **release** profile, the performance of `lazy_static_include_*` is very close to `include_*`. That means you don't need to worry about the overhead, but just enjoy the faster compilation time.
+
 ## Crates.io
 
 https://crates.io/crates/lazy-static-include
