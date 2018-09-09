@@ -548,18 +548,6 @@ macro_rules! lazy_static_include_bytes {
 
 // TODO -----include_array START-----
 
-#[doc(hidden)]
-#[macro_export]
-macro_rules! lazy_static_include_array_impl {
-    ( $name:ident ) => {
-        impl ::std::fmt::Debug for $name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                ::std::fmt::Debug::fmt(&(*$name)[..], f)
-            }
-        }
-    }
-}
-
 #[cfg(not(debug_assertions))]
 #[doc(hidden)]
 #[macro_export]
@@ -697,7 +685,7 @@ macro_rules! lazy_static_include_array_inner_b {
             }
 
             if p != $s {
-                panic!("incorrect array, file: {}", path);
+                panic!("incorrect length, {} != {}, file: {}", p, $s, path);
             }
 
             result
@@ -797,7 +785,7 @@ macro_rules! lazy_static_include_array_inner_c {
             }
 
             if p != $s {
-                panic!("incorrect array, file: {}", path);
+                panic!("incorrect length, {} != {}, file: {}", p, $s, path);
             }
 
             result
@@ -891,7 +879,7 @@ macro_rules! lazy_static_include_array_inner_s {
             }
 
             if result.len() != $s {
-                panic!("incorrect array, file: {}", path);
+                panic!("incorrect length, {} != {}, file: {}", result.len(), $s, path);
             }
 
             let mut result_str = [""; $s];
@@ -1019,7 +1007,7 @@ macro_rules! lazy_static_include_array_inner_u {
             }
 
             if p != $s {
-                panic!("incorrect array, file: {}", path);
+                panic!("incorrect length, {} != {}, file: {}", p, $s, path);
             }
 
             result
@@ -1173,7 +1161,7 @@ macro_rules! lazy_static_include_array_inner_if {
             }
 
             if p != $s {
-                panic!("incorrect array, file: {}", path);
+                panic!("incorrect length, {} != {}, file: {}", p, $s, path);
             }
 
             result
@@ -1294,57 +1282,41 @@ macro_rules! lazy_static_include_array {
         lazy_static! {
             static ref $name: [&'static str; $s] = lazy_static_include_array_inner!($name: [&'static str; $s], $path);
         }
-
-        lazy_static_include_array_impl!($name);
     };
     ( $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + ) => {
         lazy_static! {
             static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], $path $(, $paths)+);
         }
-
-        lazy_static_include_array_impl!($name);
     };
     ( pub $name:ident: [&'static str; $s:expr], $path:expr ) => {
         lazy_static! {
             pub static ref $name: [&'static str; $s] = lazy_static_include_array_inner!($name: [&'static str; $s], $path);
         }
-
-        lazy_static_include_array_impl!($name);
     };
     ( pub $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + ) => {
         lazy_static! {
             pub static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], $path $(, $paths)+);
         }
-
-        lazy_static_include_array_impl!($name);
     };
     ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
         lazy_static! {
             static ref $name: [$t; $s] = lazy_static_include_array_inner!($name: [$t; $s], $path);
         }
-
-        lazy_static_include_array_impl!($name);
     };
     ( $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + ) => {
         lazy_static! {
             static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], $path $(, $paths)+);
         }
-
-        lazy_static_include_array_impl!($name);
     };
     ( pub $name:ident: [$t:ident; $s:expr], $path:expr ) => {
         lazy_static! {
             pub static ref $name: [$t; $s] = lazy_static_include_array_inner!($name: [$t; $s], $path);
         }
-
-        lazy_static_include_array_impl!($name);
     };
     ( pub $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + ) => {
         lazy_static! {
             pub static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], $path $(, $paths)+);
         }
-
-        lazy_static_include_array_impl!($name);
     };
 }
 

@@ -238,8 +238,3 @@ fn test_include_array_bool() {
     assert_eq!(true, TEST[1]);
     assert_eq!(false, TEST[2]);
 }
-
-#[test]
-fn test_include_array_bool_large() {
-    lazy_static_include_array!(TEST: [bool; 40], "data/bool_array-large.txt");
-}
