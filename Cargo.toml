@@ -1,6 +1,6 @@
 [package]
 name = "lazy-static-include"
-version = "1.0.0"
+version = "1.1.0"
 authors = ["Magic Len <len@magiclen.org>"]
 repository = "https://github.com/magiclen/lazy-static-include"
 homepage = "https://magiclen.org/lazy-static-include"
