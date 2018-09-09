@@ -15,6 +15,17 @@ fn test_include_str() {
 }
 
 #[test]
+fn test_include_str_vec() {
+    lazy_static_include_str_vec!(TEST, "data/test.txt");
+
+    assert_eq!("This is just a test text.", TEST[0]);
+
+    lazy_static_include_str_vec!(pub TEST2, "data/test-2.txt");
+
+    assert_eq!(TEST2[0], "Some text...");
+}
+
+#[test]
 fn test_include_str_multiple() {
     lazy_static_include_str!(TEST, "data/test.txt", "data/test-2.txt");
 
@@ -35,6 +46,17 @@ fn test_include_bytes() {
 
     assert_eq!("This is just a test text.".as_bytes(), TEST);
     assert_eq!(TEST2, "Some text...".as_bytes());
+}
+
+#[test]
+fn test_include_bytes_vec() {
+    lazy_static_include_bytes_vec!(TEST, "data/test.txt");
+
+    assert_eq!("This is just a test text.".as_bytes(), TEST[0]);
+
+    lazy_static_include_bytes_vec!(pub TEST2, "data/test-2.txt");
+
+    assert_eq!(TEST2[0], "Some text...".as_bytes());
 }
 
 #[test]
@@ -206,6 +228,15 @@ fn test_include_array_string() {
     assert_eq!("Hi", TEST[0]);
     assert_eq!("Hello", TEST[1]);
     assert_eq!("哈囉", TEST[2]);
+}
+
+#[test]
+fn test_include_array_string_vec() {
+    lazy_static_include_array_vec!(TEST: [&'static str; 3], "data/string_array.txt");
+
+    assert_eq!("Hi", TEST[0][0]);
+    assert_eq!("Hello", TEST[0][1]);
+    assert_eq!("哈囉", TEST[0][2]);
 }
 
 #[test]

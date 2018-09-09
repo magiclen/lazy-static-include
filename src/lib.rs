@@ -113,6 +113,7 @@
 #[macro_export]
 macro_rules! lazy_static_include_counter {
     () => (0usize);
+    ( Vec $(, $xs:expr)* $(,)* ) => (lazy_static_include_counter!($($xs, )*));
     ( $x:expr $(, $xs:expr)* $(,)* ) => (1usize + lazy_static_include_counter!($($xs, )*));
 }
 
@@ -203,6 +204,17 @@ macro_rules! lazy_static_include_str_inner {
             include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $path))
         }
     };
+    ( $name:ident, Vec, $($paths:expr), + ) => {
+        {
+            let mut v: Vec<&'static str> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
+
+            $(
+                v.push(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths)));
+            )+
+
+            v
+        }
+    };
     ( $name:ident, $path:expr, $($paths:expr), + ) => {
         {
             let mut v: Vec<&'static str> = Vec::with_capacity(lazy_static_include_counter!($path $(, $paths)+));
@@ -247,6 +259,41 @@ macro_rules! lazy_static_include_str_inner {
                 mem::forget(s);
                 ret
             }
+        }
+    };
+    ( $name:ident, Vec, $($paths:expr), + ) => {
+        {
+            use ::std::fs::File;
+            use ::std::io::Read;
+            use ::std::mem;
+
+            let mut v: Vec<&'static str> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
+
+            $(
+                let vv = {
+                    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths);
+
+                    let mut f = File::open(&path).unwrap();
+
+                    let mut v: Vec<u8> = Vec::new();
+
+                    f.read_to_end(&mut v).unwrap();
+
+                    v
+                };
+
+                let s = String::from_utf8(vv).unwrap();
+
+                v.push(
+                    unsafe {
+                        let ret = mem::transmute(s.as_str());
+                        mem::forget(s);
+                        ret
+                    }
+                );
+            )+
+
+            v
         }
     };
     ( $name:ident, $path:expr, $($paths:expr), + ) => {
@@ -317,6 +364,13 @@ macro_rules! lazy_static_include_str {
 
         lazy_static_include_str_impl!($name);
     };
+    ( $name:ident, Vec, $($paths:expr), + ) => {
+        lazy_static! {
+            static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
+        }
+
+        lazy_static_include_str_multiple_impl!($name);
+    };
     ( $name:ident, $path:expr, $($paths:expr), + ) => {
         lazy_static! {
             static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, $path $(, $paths)+);
@@ -331,9 +385,34 @@ macro_rules! lazy_static_include_str {
 
         lazy_static_include_str_impl!($name);
     };
+    ( pub $name:ident, Vec, $($paths:expr), + ) => {
+        lazy_static! {
+            static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
+        }
+
+        lazy_static_include_str_multiple_impl!($name);
+    };
     ( pub $name:ident, $path:expr, $($paths:expr), + ) => {
         lazy_static! {
             static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, $path $(, $paths)+);
+        }
+
+        lazy_static_include_str_multiple_impl!($name);
+    };
+}
+
+#[macro_export]
+macro_rules! lazy_static_include_str_vec {
+    ( $name:ident, $($paths:expr), + ) => {
+        lazy_static! {
+            static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
+        }
+
+        lazy_static_include_str_multiple_impl!($name);
+    };
+    ( pub $name:ident, $($paths:expr), + ) => {
+        lazy_static! {
+            static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
         }
 
         lazy_static_include_str_multiple_impl!($name);
@@ -413,6 +492,17 @@ macro_rules! lazy_static_include_bytes_inner {
             include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $path))
         }
     };
+    ( $name:ident, Vec, $($paths:expr), + ) => {
+        {
+            let mut v: Vec<&'static [u8]> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
+
+            $(
+                v.push(include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths)));
+            )+
+
+            v
+        }
+    };
     ( $name:ident, $path:expr, $($paths:expr), + ) => {
         {
             let mut v: Vec<&'static [u8]> = Vec::with_capacity(lazy_static_include_counter!($path $(, $paths)+));
@@ -455,6 +545,39 @@ macro_rules! lazy_static_include_bytes_inner {
                 mem::forget(v);
                 ret
             }
+        }
+    };
+    ( $name:ident, Vec, $($paths:expr), + ) => {
+        {
+            use ::std::fs::File;
+            use ::std::io::Read;
+            use ::std::mem;
+
+            let mut v: Vec<&'static [u8]> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
+
+            $(
+                let vv = {
+                    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths);
+
+                    let mut f = File::open(&path).unwrap();
+
+                    let mut v: Vec<u8> = Vec::new();
+
+                    f.read_to_end(&mut v).unwrap();
+
+                    v
+                };
+
+                v.push(
+                    unsafe {
+                        let ret = mem::transmute(vv.as_ref() as &[u8]);
+                        mem::forget(vv);
+                        ret
+                    }
+                );
+            )+
+
+            v
         }
     };
     ( $name:ident, $path:expr, $($paths:expr), + ) => {
@@ -544,6 +667,24 @@ macro_rules! lazy_static_include_bytes {
     };
 }
 
+#[macro_export]
+macro_rules! lazy_static_include_bytes_vec {
+    ( $name:ident, $($paths:expr), + ) => {
+        lazy_static! {
+            static ref $name: Vec<&'static [u8]> = lazy_static_include_bytes_inner!($name, Vec $(, $paths)+);
+        }
+
+        lazy_static_include_bytes_multiple_impl!($name);
+    };
+    ( pub $name:ident, $($paths:expr), + ) => {
+        lazy_static! {
+            static ref $name: Vec<&'static [u8]> = lazy_static_include_bytes_inner!($name, Vec $(, $paths)+);
+        }
+
+        lazy_static_include_bytes_multiple_impl!($name);
+    };
+}
+
 // TODO -----include_bytes END-----
 
 // TODO -----include_array START-----
@@ -555,6 +696,17 @@ macro_rules! lazy_static_include_array_inner {
     ( $name:ident: [&'static str; $s:expr], $path:expr ) => {
         {
             include!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $path))
+        }
+    };
+    ( $name:ident: [&'static str; $s:expr], Vec, $($paths:expr), + ) => {
+        {
+            let mut v: Vec<[&'static str; $s]> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
+
+            $(
+                v.push(include!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths)));
+            )+
+
+            v
         }
     };
     ( $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + ) => {
@@ -573,6 +725,17 @@ macro_rules! lazy_static_include_array_inner {
     ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
         {
             include!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $path))
+        }
+    };
+    ( $name:ident: [$t:ident; $s:expr], Vec, $($paths:expr), + ) => {
+        {
+            let mut v: Vec<[$t; $s]> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
+
+            $(
+                v.push(include!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths)));
+            )+
+
+            v
         }
     };
     ( $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + ) => {
@@ -1243,9 +1406,31 @@ macro_rules! lazy_static_include_array_inner {
             lazy_static_include_array_inner_b!($name: [bool; $s], $path)
         }
     };
+    ( $name:ident: [&'static str; $s:expr], Vec, $($paths:expr), + ) => {
+        {
+            let mut v: Vec<[&'static str; $s]> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
+
+            $(
+                v.push(lazy_static_include_array_inner!($name: [&'static str; $s], $paths));
+            )+
+
+            v
+        }
+    };
     ( $name:ident: [&'static str; $s:expr], $path:expr ) => {
         {
             lazy_static_include_array_inner_s!($name: [&'static str; $s], $path)
+        }
+    };
+    ( $name:ident: [$t:ident; $s:expr], Vec, $($paths:expr), + ) => {
+        {
+            let mut v: Vec<[$t; $s]> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
+
+            $(
+                v.push(lazy_static_include_array_inner!($name: [$t; $s], $paths));
+            )+
+
+            v
         }
     };
     ( $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + ) => {
@@ -1316,6 +1501,30 @@ macro_rules! lazy_static_include_array {
     ( pub $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + ) => {
         lazy_static! {
             pub static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], $path $(, $paths)+);
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! lazy_static_include_array_vec {
+    ( $name:ident: [&'static str; $s:expr] $(, $paths:expr)+ ) => {
+        lazy_static! {
+            static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], Vec $(, $paths)+);
+        }
+    };
+    ( pub $name:ident: [&'static str; $s:expr], $($paths:expr), + ) => {
+        lazy_static! {
+            pub static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], Vec $(, $paths)+);
+        }
+    };
+    ( $name:ident: [$t:ident; $s:expr], $($paths:expr), + ) => {
+        lazy_static! {
+            static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], Vec $(, $paths)+);
+        }
+    };
+    ( pub $name:ident: [$t:ident; $s:expr], $($paths:expr), + ) => {
+        lazy_static! {
+            pub static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], Vec $(, $paths)+);
         }
     };
 }
