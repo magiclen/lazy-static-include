@@ -1,0 +1,18 @@
+[package]
+name = "lazy-static-include"
+version = "1.0.0"
+authors = ["Magic Len <len@magiclen.org>"]
+repository = "https://github.com/magiclen/lazy-static-include"
+homepage = "https://magiclen.org/lazy-static-include"
+keywords = ["lazy", "macro", "static", "include"]
+categories = ["memory-management"]
+description= "This crate provides `lazy_static_include_bytes` and `lazy_static_include_str` macros to replace `include_bytes` and `include_str` macros."
+readme = "README.md"
+license = "MIT"
+
+[badges]
+travis-ci = { repository = "magiclen/lazy-static-include", branch = "master" }
+appveyor = { repository = "magiclen/lazy-static-include", branch = "master", service = "github" }
+
+[dependencies]
+lazy_static = "1.1"
