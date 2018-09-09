@@ -554,7 +554,7 @@ macro_rules! lazy_static_include_array_impl {
     ( $name:ident ) => {
         impl ::std::fmt::Debug for $name {
             fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                ::std::fmt::Debug::fmt(&*$name, f)
+                ::std::fmt::Debug::fmt(&(*$name)[..], f)
             }
         }
     }
