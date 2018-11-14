@@ -5,7 +5,7 @@ extern crate lazy_static_include;
 extern crate lazy_static;
 
 #[test]
-fn test_include_str() {
+fn include_str() {
     lazy_static_include_str!(TEST, "data/test.txt");
 
     lazy_static_include_str!(pub TEST2, "data/test-2.txt");
@@ -15,7 +15,7 @@ fn test_include_str() {
 }
 
 #[test]
-fn test_include_str_vec() {
+fn include_str_vec() {
     lazy_static_include_str_vec!(TEST, "data/test.txt");
 
     assert_eq!("This is just a test text.", TEST[0]);
@@ -26,7 +26,7 @@ fn test_include_str_vec() {
 }
 
 #[test]
-fn test_include_str_multiple() {
+fn include_str_multiple() {
     lazy_static_include_str!(TEST, "data/test.txt", "data/test-2.txt");
 
     assert_eq!("This is just a test text.", TEST[0]);
@@ -39,7 +39,7 @@ fn test_include_str_multiple() {
 }
 
 #[test]
-fn test_include_bytes() {
+fn include_bytes() {
     lazy_static_include_bytes!(TEST, "data/test.txt");
 
     lazy_static_include_bytes!(pub TEST2, "data/test-2.txt");
@@ -49,7 +49,7 @@ fn test_include_bytes() {
 }
 
 #[test]
-fn test_include_bytes_vec() {
+fn include_bytes_vec() {
     lazy_static_include_bytes_vec!(TEST, "data/test.txt");
 
     assert_eq!("This is just a test text.".as_bytes(), TEST[0]);
@@ -60,7 +60,7 @@ fn test_include_bytes_vec() {
 }
 
 #[test]
-fn test_include_bytes_multiple() {
+fn include_bytes_multiple() {
     lazy_static_include_bytes!(TEST, "data/test.txt", "data/test-2.txt");
 
     assert_eq!("This is just a test text.".as_bytes(), TEST[0]);
@@ -73,7 +73,7 @@ fn test_include_bytes_multiple() {
 }
 
 #[test]
-fn test_include_array_i8() {
+fn include_array_i8() {
     lazy_static_include_array!(TEST: [i8; 5], "data/i8_array.txt");
 
     assert_eq!(12, TEST[0]);
@@ -84,7 +84,7 @@ fn test_include_array_i8() {
 }
 
 #[test]
-fn test_include_array_i16() {
+fn include_array_i16() {
     lazy_static_include_array!(pub TEST: [i16; 5], "data/i16_array.txt");
 
     assert_eq!(123, TEST[0]);
@@ -95,7 +95,7 @@ fn test_include_array_i16() {
 }
 
 #[test]
-fn test_include_array_i32() {
+fn include_array_i32() {
     lazy_static_include_array!(TEST: [i32; 5], "data/i32_array.txt");
 
     assert_eq!(123, TEST[0]);
@@ -106,7 +106,7 @@ fn test_include_array_i32() {
 }
 
 #[test]
-fn test_include_array_i64() {
+fn include_array_i64() {
     lazy_static_include_array!(pub TEST: [i64; 5], "data/i64_array.txt");
 
     assert_eq!(123, TEST[0]);
@@ -117,7 +117,7 @@ fn test_include_array_i64() {
 }
 
 #[test]
-fn test_include_array_i128() {
+fn include_array_i128() {
     lazy_static_include_array!(TEST: [i128; 5], "data/i128_array.txt");
 
     assert_eq!(123, TEST[0]);
@@ -128,7 +128,7 @@ fn test_include_array_i128() {
 }
 
 #[test]
-fn test_include_array_f32() {
+fn include_array_f32() {
     lazy_static_include_array!(pub TEST: [f32; 5], "data/f32_array.txt");
 
     assert_eq!(123f32, TEST[0]);
@@ -139,7 +139,7 @@ fn test_include_array_f32() {
 }
 
 #[test]
-fn test_include_array_f64() {
+fn include_array_f64() {
     lazy_static_include_array!(TEST: [f64; 5], "data/f64_array.txt");
 
     assert_eq!(123f64, TEST[0]);
@@ -150,7 +150,7 @@ fn test_include_array_f64() {
 }
 
 #[test]
-fn test_include_array_u8() {
+fn include_array_u8() {
     lazy_static_include_array!(pub TEST: [u8; 5], "data/u8_array.txt");
 
     assert_eq!(12, TEST[0]);
@@ -161,7 +161,7 @@ fn test_include_array_u8() {
 }
 
 #[test]
-fn test_include_array_u16() {
+fn include_array_u16() {
     lazy_static_include_array!(TEST: [u16; 5], "data/u16_array.txt");
 
     assert_eq!(123, TEST[0]);
@@ -172,7 +172,7 @@ fn test_include_array_u16() {
 }
 
 #[test]
-fn test_include_array_u32() {
+fn include_array_u32() {
     lazy_static_include_array!(pub TEST: [u32; 5], "data/u32_array.txt");
 
     assert_eq!(123, TEST[0]);
@@ -183,7 +183,7 @@ fn test_include_array_u32() {
 }
 
 #[test]
-fn test_include_array_u64() {
+fn include_array_u64() {
     lazy_static_include_array!(TEST: [u64; 5], "data/u64_array.txt");
 
     assert_eq!(123, TEST[0]);
@@ -194,7 +194,7 @@ fn test_include_array_u64() {
 }
 
 #[test]
-fn test_include_array_u128() {
+fn include_array_u128() {
     lazy_static_include_array!(pub TEST: [u128; 5], "data/u128_array.txt");
 
     assert_eq!(123, TEST[0]);
@@ -205,7 +205,7 @@ fn test_include_array_u128() {
 }
 
 #[test]
-fn test_include_array_i32_multiple() {
+fn include_array_i32_multiple() {
     lazy_static_include_array!(TEST: [i32; 5], "data/i32_array.txt", "data/i32_array-2.txt");
 
     assert_eq!(123, TEST[0][0]);
@@ -222,7 +222,7 @@ fn test_include_array_i32_multiple() {
 }
 
 #[test]
-fn test_include_array_string() {
+fn include_array_string() {
     lazy_static_include_array!(pub TEST: [&'static str; 3], "data/string_array.txt");
 
     assert_eq!("Hi", TEST[0]);
@@ -231,7 +231,7 @@ fn test_include_array_string() {
 }
 
 #[test]
-fn test_include_array_string_vec() {
+fn include_array_string_vec() {
     lazy_static_include_array_vec!(TEST: [&'static str; 3], "data/string_array.txt");
 
     assert_eq!("Hi", TEST[0][0]);
@@ -240,7 +240,7 @@ fn test_include_array_string_vec() {
 }
 
 #[test]
-fn test_include_array_string_multiple() {
+fn include_array_string_multiple() {
     lazy_static_include_array!(TEST: [&'static str; 3], "data/string_array.txt", "data/string_array-2.txt");
 
     assert_eq!("Hi", TEST[0][0]);
@@ -253,7 +253,7 @@ fn test_include_array_string_multiple() {
 }
 
 #[test]
-fn test_include_array_char() {
+fn include_array_char() {
     lazy_static_include_array!(pub TEST: [char; 3], "data/char_array.txt");
 
     assert_eq!('a', TEST[0]);
@@ -262,7 +262,7 @@ fn test_include_array_char() {
 }
 
 #[test]
-fn test_include_array_bool() {
+fn include_array_bool() {
     lazy_static_include_array!(pub TEST: [bool; 3], "data/bool_array.txt");
 
     assert_eq!(false, TEST[0]);

@@ -102,6 +102,7 @@ assert_eq!(-3, TEST[1][2]);
 assert_eq!(-4, TEST[1][3]);
 assert_eq!(-5, TEST[1][4]);
 ```
+
 ```rust
 #[macro_use] extern crate lazy_static_include;
 #[macro_use] extern crate lazy_static;
@@ -115,23 +116,38 @@ assert_eq!("哈囉", TEST[2]);
 
 ## Benchmark
 
-Using static mechanisms makes your program faster. See my benchmark result below (Intel i7-6700HQ, ran on 2018/09/10):
+Using static mechanisms makes your program faster. See my benchmark result below (Intel i7-6700HQ, ran on 2018/11/14):
 
 ```text
-running 9 tests
-test include_array_lazy_static   ... bench:          44 ns/iter (+/- 2)
-test include_array_native_static ... bench:          44 ns/iter (+/- 2)
-test include_array_no_static     ... bench:       8,470 ns/iter (+/- 568)
-test include_bytes_lazy_static   ... bench:         473 ns/iter (+/- 84)
-test include_bytes_native_static ... bench:         482 ns/iter (+/- 30)
-test include_bytes_no_static     ... bench:       7,247 ns/iter (+/- 1,183)
-test include_str_lazy_static     ... bench:         963 ns/iter (+/- 85)
-test include_str_native_static   ... bench:         970 ns/iter (+/- 76)
-test include_str_no_static       ... bench:       8,338 ns/iter (+/- 556)
+include_str/include_str_no_static
+                        time:   [8.3773 us 8.4061 us 8.4361 us]
+include_str/include_str_native_static
+                        time:   [965.65 ns 969.47 ns 973.04 ns]
+include_str/include_str_lazy_static
+                        time:   [955.93 ns 958.78 ns 961.88 ns]
+
+include_bytes/include_bytes_no_static
+                        time:   [7.7806 us 7.8056 us 7.8318 us]
+include_bytes/include_bytes_native_static
+                        time:   [418.43 ns 420.12 ns 421.83 ns]
+include_bytes/include_bytes_lazy_static
+                        time:   [413.43 ns 415.14 ns 417.37 ns]
+
+include_array/include_array_no_static
+                        time:   [30.125 us 30.285 us 30.445 us]
+include_array/include_array_native_static
+                        time:   [38.510 ns 38.640 ns 38.786 ns]
+include_array/include_array_lazy_static
+                        time:   [39.713 ns 39.863 ns 40.019 ns]
 ```
 
-This benchmark program is in `tests/benchmark.rs`.
 When using the **release** profile, the performance of `lazy_static_include_*` is very close to `include_*`. That means you don't need to worry about the overhead, but just enjoy the faster compilation time.
+
+You can run the benchmark program by executing,
+
+```bash
+cargo bench
+```
 
 ## Crates.io
 

@@ -1,6 +1,6 @@
 [package]
 name = "lazy-static-include"
-version = "1.2.0"
+version = "1.2.1"
 authors = ["Magic Len <len@magiclen.org>"]
 repository = "https://github.com/magiclen/lazy-static-include"
 homepage = "https://magiclen.org/lazy-static-include"
@@ -17,5 +17,10 @@ appveyor = { repository = "magiclen/lazy-static-include", branch = "master", ser
 [dependencies]
 lazy_static = "1.1"
 
-[features]
-benchmark = []
+[dev-dependencies]
+criterion = "0.2.5"
+serde_json = "1.0.33"
+
+[[bench]]
+name = "bench"
+harness = false
