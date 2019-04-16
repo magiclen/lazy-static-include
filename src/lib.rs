@@ -146,6 +146,7 @@ You can run the benchmark program by executing,
 cargo bench
 ```
 */
+#![no_std]
 
 mod macro_include_counter;
 mod macro_include_str;
