@@ -62,15 +62,15 @@ lazy_static_include_str!(TEST, "data/test.txt", "data/test-2.txt");
 let v: &Vec<&'static str> = &*TEST;
 ```
 
-## Include Array (temporarily deprecated)
+## Include Array
 
 There is a special macro `lazy_static_include_array` which can include arrays from files.
-The array is fixed sized and can be one of these following types: `bool`, `char`, `u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`, `i64`, `i128`, `f32`, `f64`, `&'static str`.
+The array is fixed sized and can be one of these following types: `bool`, `char`, `usize`, `u8`, `u16`, `u32`, `u64`, `u128`, `isize`, `i8`, `i16`, `i32`, `i64`, `i128`, `f32`, `f64`, `&'static str`.
 
 Also, the `lazy_static_include_array` macro includes data from files into the compiled executable binary file **only** when you are using the **release** profile.
 Be careful when you distribute your program.
 
-```rust
+```rust,ignore
 #[macro_use] extern crate lazy_static_include;
 #[macro_use] extern crate lazy_static;
 
@@ -82,7 +82,7 @@ assert_eq!(1000, TEST[3]);
 assert_eq!(500000000000u64, TEST[4]);
 ```
 
-```rust
+```rust,ignore
 #[macro_use] extern crate lazy_static_include;
 #[macro_use] extern crate lazy_static;
 
@@ -100,7 +100,7 @@ assert_eq!(-4, TEST[1][3]);
 assert_eq!(-5, TEST[1][4]);
 ```
 
-```rust
+```rust,ignore
 #[macro_use] extern crate lazy_static_include;
 #[macro_use] extern crate lazy_static;
 
@@ -109,6 +109,19 @@ lazy_static_include_array!(pub TEST: [&'static str; 3], "data/string_array.txt")
 assert_eq!("Hi", TEST[0]);
 assert_eq!("Hello", TEST[1]);
 assert_eq!("哈囉", TEST[2]);
+```
+
+## No Std
+
+This crate can work without std, but the `lazy_static_include_array` macro will be disabled unless using the **release** profile.
+
+Enable the feature **no_std** to compile this crate without std.
+
+```toml
+[dependencies.lazy-static-include]
+version = "*"
+features = ["no_std"]
+default-features = false
 ```
 
 ## Benchmark
@@ -146,7 +159,16 @@ You can run the benchmark program by executing,
 cargo bench
 ```
 */
-#![no_std]
+
+#![cfg_attr(feature = "no_std", no_std)]
+
+#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[doc(hidden)]
+pub extern crate syn;
+
+#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[doc(hidden)]
+pub extern crate starts_ends_with_caseless;
 
 mod macro_include_counter;
 mod macro_include_str;

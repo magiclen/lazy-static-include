@@ -72,6 +72,19 @@ fn include_bytes_multiple() {
     assert_eq!(TEST2[1], "This is just a test text.".as_bytes());
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
+#[test]
+fn include_array_isize() {
+    lazy_static_include_array!(TEST: [isize; 5], "data/isize_array.txt");
+
+    assert_eq!(123, TEST[0]);
+    assert_eq!(-456, TEST[1]);
+    assert_eq!(789, TEST[2]);
+    assert_eq!(1000, TEST[3]);
+    assert_eq!(5000, TEST[4]);
+}
+
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_i8() {
     lazy_static_include_array!(TEST: [i8; 5], "data/i8_array.txt");
@@ -83,6 +96,7 @@ fn include_array_i8() {
     assert_eq!(90, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_i16() {
     lazy_static_include_array!(pub TEST: [i16; 5], "data/i16_array.txt");
@@ -94,6 +108,7 @@ fn include_array_i16() {
     assert_eq!(5000, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_i32() {
     lazy_static_include_array!(TEST: [i32; 5], "data/i32_array.txt");
@@ -105,6 +120,7 @@ fn include_array_i32() {
     assert_eq!(5000, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_i64() {
     lazy_static_include_array!(pub TEST: [i64; 5], "data/i64_array.txt");
@@ -116,6 +132,7 @@ fn include_array_i64() {
     assert_eq!(500000000000i64, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_i128() {
     lazy_static_include_array!(TEST: [i128; 5], "data/i128_array.txt");
@@ -127,6 +144,7 @@ fn include_array_i128() {
     assert_eq!(500000000000000000000000i128, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_f32() {
     lazy_static_include_array!(pub TEST: [f32; 5], "data/f32_array.txt");
@@ -138,6 +156,7 @@ fn include_array_f32() {
     assert_eq!(5000f32, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_f64() {
     lazy_static_include_array!(TEST: [f64; 5], "data/f64_array.txt");
@@ -149,6 +168,19 @@ fn include_array_f64() {
     assert_eq!(5000.456f64, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
+#[test]
+fn include_array_usize() {
+    lazy_static_include_array!(pub TEST: [usize; 5], "data/usize_array.txt");
+
+    assert_eq!(123, TEST[0]);
+    assert_eq!(456, TEST[1]);
+    assert_eq!(789, TEST[2]);
+    assert_eq!(1000, TEST[3]);
+    assert_eq!(5000, TEST[4]);
+}
+
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_u8() {
     lazy_static_include_array!(pub TEST: [u8; 5], "data/u8_array.txt");
@@ -160,6 +192,7 @@ fn include_array_u8() {
     assert_eq!(90, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_u16() {
     lazy_static_include_array!(TEST: [u16; 5], "data/u16_array.txt");
@@ -171,6 +204,7 @@ fn include_array_u16() {
     assert_eq!(5000, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_u32() {
     lazy_static_include_array!(pub TEST: [u32; 5], "data/u32_array.txt");
@@ -182,6 +216,7 @@ fn include_array_u32() {
     assert_eq!(5000, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_u64() {
     lazy_static_include_array!(TEST: [u64; 5], "data/u64_array.txt");
@@ -193,6 +228,7 @@ fn include_array_u64() {
     assert_eq!(500000000000u64, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_u128() {
     lazy_static_include_array!(pub TEST: [u128; 5], "data/u128_array.txt");
@@ -204,6 +240,7 @@ fn include_array_u128() {
     assert_eq!(500000000000000000000000u128, TEST[4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_i32_multiple() {
     lazy_static_include_array!(TEST: [i32; 5], "data/i32_array.txt", "data/i32_array-2.txt");
@@ -221,6 +258,7 @@ fn include_array_i32_multiple() {
     assert_eq!(-5, TEST[1][4]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_string() {
     lazy_static_include_array!(pub TEST: [&'static str; 3], "data/string_array.txt");
@@ -230,6 +268,7 @@ fn include_array_string() {
     assert_eq!("哈囉", TEST[2]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_string_vec() {
     lazy_static_include_array_vec!(TEST: [&'static str; 3], "data/string_array.txt");
@@ -239,6 +278,7 @@ fn include_array_string_vec() {
     assert_eq!("哈囉", TEST[0][2]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_string_multiple() {
     lazy_static_include_array!(TEST: [&'static str; 3], "data/string_array.txt", "data/string_array-2.txt");
@@ -252,6 +292,7 @@ fn include_array_string_multiple() {
     assert_eq!("你好", TEST[1][2]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_char() {
     lazy_static_include_array!(pub TEST: [char; 3], "data/char_array.txt");
@@ -261,6 +302,7 @@ fn include_array_char() {
     assert_eq!('c', TEST[2]);
 }
 
+#[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_bool() {
     lazy_static_include_array!(pub TEST: [bool; 3], "data/bool_array.txt");

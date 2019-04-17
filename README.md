@@ -65,10 +65,10 @@ lazy_static_include_str!(TEST, "data/test.txt", "data/test-2.txt");
 let v: &Vec<&'static str> = &*TEST;
 ```
 
-## Include Array (temporarily deprecated)
+## Include Array
 
 There is a special macro `lazy_static_include_array` which can include arrays from files.
-The array is fixed sized and can be one of these following types: `bool`, `char`, `u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`, `i64`, `i128`, `f32`, `f64`, `&'static str`.
+The array is fixed sized and can be one of these following types: `bool`, `char`, `usize`, `u8`, `u16`, `u32`, `u64`, `u128`, `isize`, `i8`, `i16`, `i32`, `i64`, `i128`, `f32`, `f64`, `&'static str`.
 
 Also, the `lazy_static_include_array` macro includes data from files into the compiled executable binary file **only** when you are using the **release** profile.
 Be careful when you distribute your program.
@@ -112,6 +112,19 @@ lazy_static_include_array!(pub TEST: [&'static str; 3], "data/string_array.txt")
 assert_eq!("Hi", TEST[0]);
 assert_eq!("Hello", TEST[1]);
 assert_eq!("哈囉", TEST[2]);
+```
+
+## No Std
+
+This crate can work without std, but the `lazy_static_include_array` macro will be disabled unless using the **release** profile.
+
+Enable the feature **no_std** to compile this crate without std.
+
+```toml
+[dependencies.lazy-static-include]
+version = "*"
+features = ["no_std"]
+default-features = false
 ```
 
 ## Benchmark
