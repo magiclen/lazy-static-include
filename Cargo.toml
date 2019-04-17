@@ -1,6 +1,6 @@
 [package]
 name = "lazy-static-include"
-version = "2.0.0"
+version = "2.0.1"
 authors = ["Magic Len <len@magiclen.org>"]
 repository = "https://github.com/magiclen/lazy-static-include"
 homepage = "https://magiclen.org/lazy-static-include"
@@ -16,7 +16,7 @@ appveyor = { repository = "magiclen/lazy-static-include", branch = "master", ser
 
 [dependencies]
 lazy_static = "1.3"
-syn = {version = "0.15.31", features = ["parsing", "full"], optional = true}
+syn = {version = "0.15.31", features = ["parsing", "full", "extra-traits"], optional = true}
 starts-ends-with-caseless = {version = "0.2.1", optional = true}
 
 [dev-dependencies]
