@@ -62,7 +62,7 @@ lazy_static_include_str!(TEST, "data/test.txt", "data/test-2.txt");
 let v: &Vec<&'static str> = &*TEST;
 ```
 
-## Include Array
+## Include Array (temporarily deprecated)
 
 There is a special macro `lazy_static_include_array` which can include arrays from files.
 The array is fixed sized and can be one of these following types: `bool`, `char`, `u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`, `i64`, `i128`, `f32`, `f64`, `&'static str`.

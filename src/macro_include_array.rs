@@ -824,6 +824,7 @@ macro_rules! lazy_static_include_array {
 }
 
 #[macro_export]
+#[deprecated(since = "1.3.0", note = "extremely unstable, it should be implemented by the `syn` crate")]
 macro_rules! lazy_static_include_array_vec {
     ( $name:ident: [&'static str; $s:expr] $(, $paths:expr)+ $(,)* ) => {
         lazy_static! {
