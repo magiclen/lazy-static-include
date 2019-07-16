@@ -264,16 +264,37 @@ macro_rules! lazy_static_include_str {
 
         lazy_static_include_str_impl!($name);
     };
+    ( pub($($vis:tt)*) $name:ident, $path:expr $(,)* ) => {
+        lazy_static! {
+            pub($($vis)*) static ref $name: &'static str = lazy_static_include_str_inner!($name, $path);
+        }
+
+        lazy_static_include_str_impl!($name);
+    };
     ( pub $name:ident, Vec, $($paths:expr), + $(,)* ) => {
         lazy_static! {
-            static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
+            pub static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
+        }
+
+        lazy_static_include_str_multiple_impl!($name);
+    };
+    ( pub($($vis:tt)*) $name:ident, Vec, $($paths:expr), + $(,)* ) => {
+        lazy_static! {
+            pub($($vis)*) static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
         }
 
         lazy_static_include_str_multiple_impl!($name);
     };
     ( pub $name:ident, $path:expr, $($paths:expr), + $(,)* ) => {
         lazy_static! {
-            static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, $path $(, $paths)+);
+            pub static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, $path $(, $paths)+);
+        }
+
+        lazy_static_include_str_multiple_impl!($name);
+    };
+    ( pub($($vis:tt)*) $name:ident, $path:expr, $($paths:expr), + $(,)* ) => {
+        lazy_static! {
+            pub($($vis)*) static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, $path $(, $paths)+);
         }
 
         lazy_static_include_str_multiple_impl!($name);
@@ -291,7 +312,14 @@ macro_rules! lazy_static_include_str_vec {
     };
     ( pub $name:ident, $($paths:expr), + $(,)* ) => {
         lazy_static! {
-            static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
+            pub static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
+        }
+
+        lazy_static_include_str_multiple_impl!($name);
+    };
+    ( pub($($vis:tt)*) $name:ident, $($paths:expr), + $(,)* ) => {
+        lazy_static! {
+            pub static ref $name: Vec<&'static str> = lazy_static_include_str_inner!($name, Vec $(, $paths)+);
         }
 
         lazy_static_include_str_multiple_impl!($name);

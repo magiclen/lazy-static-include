@@ -233,9 +233,23 @@ macro_rules! lazy_static_include_bytes {
 
         lazy_static_include_bytes_impl!($name);
     };
+    ( pub($($vis:tt)*) $name:ident, $path:expr $(,)* ) => {
+        lazy_static! {
+            pub($($vis)*) static ref $name: &'static [u8] = lazy_static_include_bytes_inner!($name, $path);
+        }
+
+        lazy_static_include_bytes_impl!($name);
+    };
     ( pub $name:ident, $path:expr, $($paths:expr), + $(,)* ) => {
         lazy_static! {
-            static ref $name: Vec<&'static [u8]> = lazy_static_include_bytes_inner!($name, $path $(, $paths)+);
+            pub static ref $name: Vec<&'static [u8]> = lazy_static_include_bytes_inner!($name, $path $(, $paths)+);
+        }
+
+        lazy_static_include_bytes_multiple_impl!($name);
+    };
+    ( pub($($vis:tt)*) $name:ident, $path:expr, $($paths:expr), + $(,)* ) => {
+        lazy_static! {
+            pub($($vis)*) static ref $name: Vec<&'static [u8]> = lazy_static_include_bytes_inner!($name, $path $(, $paths)+);
         }
 
         lazy_static_include_bytes_multiple_impl!($name);
@@ -253,7 +267,14 @@ macro_rules! lazy_static_include_bytes_vec {
     };
     ( pub $name:ident, $($paths:expr), + $(,)* ) => {
         lazy_static! {
-            static ref $name: Vec<&'static [u8]> = lazy_static_include_bytes_inner!($name, Vec $(, $paths)+);
+            pub static ref $name: Vec<&'static [u8]> = lazy_static_include_bytes_inner!($name, Vec $(, $paths)+);
+        }
+
+        lazy_static_include_bytes_multiple_impl!($name);
+    };
+    ( pub($($vis:tt)*) $name:ident, $($paths:expr), + $(,)* ) => {
+        lazy_static! {
+            pub($($vis)*) static ref $name: Vec<&'static [u8]> = lazy_static_include_bytes_inner!($name, Vec $(, $paths)+);
         }
 
         lazy_static_include_bytes_multiple_impl!($name);
