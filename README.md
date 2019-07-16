@@ -129,7 +129,7 @@ default-features = false
 
 ## Benchmark
 
-Using static mechanisms makes your program faster. See my benchmark result below (Intel i7-6700HQ, ran on 2018/11/14):
+Using static mechanisms makes your program faster. See my benchmark result below (Intel i7-6700HQ, ran on 2019/07/16):
 
 ```text
 test include_array_lazy_static   ... bench:          43 ns/iter (+/- 3)
