@@ -132,26 +132,15 @@ default-features = false
 Using static mechanisms makes your program faster. See my benchmark result below (Intel i7-6700HQ, ran on 2018/11/14):
 
 ```text
-include_str/include_str_no_static
-                        time:   [8.3773 us 8.4061 us 8.4361 us]
-include_str/include_str_native_static
-                        time:   [965.65 ns 969.47 ns 973.04 ns]
-include_str/include_str_lazy_static
-                        time:   [955.93 ns 958.78 ns 961.88 ns]
-
-include_bytes/include_bytes_no_static
-                        time:   [7.7806 us 7.8056 us 7.8318 us]
-include_bytes/include_bytes_native_static
-                        time:   [418.43 ns 420.12 ns 421.83 ns]
-include_bytes/include_bytes_lazy_static
-                        time:   [413.43 ns 415.14 ns 417.37 ns]
-
-include_array/include_array_no_static
-                        time:   [30.125 us 30.285 us 30.445 us]
-include_array/include_array_native_static
-                        time:   [38.510 ns 38.640 ns 38.786 ns]
-include_array/include_array_lazy_static
-                        time:   [39.713 ns 39.863 ns 40.019 ns]
+test include_array_lazy_static   ... bench:          43 ns/iter (+/- 3)
+test include_array_native_static ... bench:          46 ns/iter (+/- 4)
+test include_array_no_static     ... bench:      29,714 ns/iter (+/- 1,156)
+test include_bytes_lazy_static   ... bench:         382 ns/iter (+/- 63)
+test include_bytes_native_static ... bench:         380 ns/iter (+/- 30)
+test include_bytes_no_static     ... bench:       9,076 ns/iter (+/- 1,224)
+test include_str_lazy_static     ... bench:         932 ns/iter (+/- 103)
+test include_str_native_static   ... bench:         937 ns/iter (+/- 25)
+test include_str_no_static       ... bench:      10,135 ns/iter (+/- 1,634)
 ```
 
 When using the **release** profile, the performance of `lazy_static_include_*` is very close to `include_*`. That means you don't need to worry about the overhead, but just enjoy the faster compilation time.
