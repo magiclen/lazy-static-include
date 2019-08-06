@@ -62,7 +62,7 @@ macro_rules! lazy_static_include_array_inner {
     };
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_b {
@@ -90,15 +90,15 @@ macro_rules! lazy_static_include_array_inner_b {
 
             let mut result = [false; $s];
 
-            if let Ok(::lazy_static_include::syn::Expr::Array(array)) = ::lazy_static_include::syn::parse_str(s) {
+            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
                     }
 
-                    if let ::lazy_static_include::syn::Expr::Lit(exp) = l {
+                    if let $crate::syn::Expr::Lit(exp) = l {
                         match exp.lit {
-                            ::lazy_static_include::syn::Lit::Bool(b) => {
+                            $crate::syn::Lit::Bool(b) => {
                                 result[i] = b.value;
                             }
                             _ => {
@@ -118,7 +118,7 @@ macro_rules! lazy_static_include_array_inner_b {
     }
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_c {
@@ -146,15 +146,15 @@ macro_rules! lazy_static_include_array_inner_c {
 
             let mut result = ['\0'; $s];
 
-            if let Ok(::lazy_static_include::syn::Expr::Array(array)) = ::lazy_static_include::syn::parse_str(s) {
+            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
                     }
 
-                    if let ::lazy_static_include::syn::Expr::Lit(exp) = l {
+                    if let $crate::syn::Expr::Lit(exp) = l {
                         match exp.lit {
-                            ::lazy_static_include::syn::Lit::Char(c) => {
+                            $crate::syn::Lit::Char(c) => {
                                 result[i] = c.value();
                             }
                             _ => {
@@ -174,7 +174,7 @@ macro_rules! lazy_static_include_array_inner_c {
     }
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_s {
@@ -202,15 +202,15 @@ macro_rules! lazy_static_include_array_inner_s {
 
             let mut result = Vec::with_capacity($s);
 
-            if let Ok(::lazy_static_include::syn::Expr::Array(array)) = ::lazy_static_include::syn::parse_str(s) {
+            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
                     }
 
-                    if let ::lazy_static_include::syn::Expr::Lit(exp) = l {
+                    if let $crate::syn::Expr::Lit(exp) = l {
                         match exp.lit {
-                            ::lazy_static_include::syn::Lit::Str(s) => {
+                            $crate::syn::Lit::Str(s) => {
                                 result.push(s.value());
                             }
                             _ => {
@@ -243,7 +243,7 @@ macro_rules! lazy_static_include_array_inner_s {
     }
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_u {
@@ -270,37 +270,37 @@ macro_rules! lazy_static_include_array_inner_u {
 
             let mut result = [0 as $t; $s];
 
-            if let Ok(::lazy_static_include::syn::Expr::Array(array)) = ::lazy_static_include::syn::parse_str(s) {
+            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
                     }
 
-                    if let ::lazy_static_include::syn::Expr::Lit(exp) = l {
+                    if let $crate::syn::Expr::Lit(exp) = l {
                         match exp.lit {
-                            ::lazy_static_include::syn::Lit::Int(u) => {
+                            $crate::syn::Lit::Int(u) => {
                                 let accept_suffix = match stringify!($t) {
                                     "usize" => {
-                                        ::lazy_static_include::syn::IntSuffix::Usize
+                                        $crate::syn::IntSuffix::Usize
                                     },
                                     "u8" => {
-                                        ::lazy_static_include::syn::IntSuffix::U8
+                                        $crate::syn::IntSuffix::U8
                                     },
                                     "u16" => {
-                                        ::lazy_static_include::syn::IntSuffix::U16
+                                        $crate::syn::IntSuffix::U16
                                     },
                                     "u32" => {
-                                        ::lazy_static_include::syn::IntSuffix::U32
+                                        $crate::syn::IntSuffix::U32
                                     },
                                     "u64" => {
-                                        ::lazy_static_include::syn::IntSuffix::U64
+                                        $crate::syn::IntSuffix::U64
                                     },
                                     _ => unreachable!()
                                 };
 
                                 let suffix = u.suffix();
 
-                                if suffix != ::lazy_static_include::syn::IntSuffix::None && suffix != accept_suffix {
+                                if suffix != $crate::syn::IntSuffix::None && suffix != accept_suffix {
                                     panic!("incorrect element type, index = {}, file: {}", i, path);
                                 }
 
@@ -329,7 +329,7 @@ macro_rules! lazy_static_include_array_inner_u {
     }
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_u128 {
@@ -337,7 +337,7 @@ macro_rules! lazy_static_include_array_inner_u128 {
         {
             use ::std::fs::File;
             use ::std::io::Read;
-            use ::lazy_static_include::starts_ends_with_caseless::EndsWithCaseless;
+            use $crate::starts_ends_with_caseless::EndsWithCaseless;
 
             let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
@@ -357,15 +357,15 @@ macro_rules! lazy_static_include_array_inner_u128 {
 
             let mut result = [0 as $t; $s];
 
-            if let Ok(::lazy_static_include::syn::Expr::Array(array)) = ::lazy_static_include::syn::parse_str(s) {
+            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
                     }
 
-                    if let ::lazy_static_include::syn::Expr::Lit(exp) = l {
+                    if let $crate::syn::Expr::Lit(exp) = l {
                         match exp.lit {
-                            ::lazy_static_include::syn::Lit::Verbatim(v) => {
+                            $crate::syn::Lit::Verbatim(v) => {
                                 let s = v.token.to_string();
 
                                 let s = if s.ends_with_caseless_ascii("u128") {
@@ -380,10 +380,10 @@ macro_rules! lazy_static_include_array_inner_u128 {
 
                                 result[i] = u;
                             }
-                            ::lazy_static_include::syn::Lit::Int(u) => {
+                            $crate::syn::Lit::Int(u) => {
                                 let suffix = u.suffix();
 
-                                if suffix != ::lazy_static_include::syn::IntSuffix::None && suffix != ::lazy_static_include::syn::IntSuffix::U128 {
+                                if suffix != $crate::syn::IntSuffix::None && suffix != $crate::syn::IntSuffix::U128 {
                                     panic!("incorrect element type, index = {}, file: {}", i, path);
                                 }
 
@@ -406,7 +406,7 @@ macro_rules! lazy_static_include_array_inner_u128 {
     }
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_i {
@@ -433,7 +433,7 @@ macro_rules! lazy_static_include_array_inner_i {
 
             let mut result = [0 as $t; $s];
 
-            if let Ok(::lazy_static_include::syn::Expr::Array(array)) = ::lazy_static_include::syn::parse_str(s) {
+            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
@@ -442,14 +442,14 @@ macro_rules! lazy_static_include_array_inner_i {
                     let mut neg = false;
 
                     let exp = match l {
-                        ::lazy_static_include::syn::Expr::Lit(exp) => {
+                        $crate::syn::Expr::Lit(exp) => {
                             exp
                         }
-                        ::lazy_static_include::syn::Expr::Unary(exp) => {
+                        $crate::syn::Expr::Unary(exp) => {
                             neg = true;
 
                             match exp.expr.as_ref() {
-                                ::lazy_static_include::syn::Expr::Lit(exp) => {
+                                $crate::syn::Expr::Lit(exp) => {
                                     exp.clone()
                                 }
                                 _ => {
@@ -463,29 +463,29 @@ macro_rules! lazy_static_include_array_inner_i {
                     };
 
                     match exp.lit {
-                        ::lazy_static_include::syn::Lit::Int(n) => {
+                        $crate::syn::Lit::Int(n) => {
                             let accept_suffix = match stringify!($t) {
                                 "isize" => {
-                                    ::lazy_static_include::syn::IntSuffix::Isize
+                                    $crate::syn::IntSuffix::Isize
                                 },
                                 "i8" => {
-                                    ::lazy_static_include::syn::IntSuffix::I8
+                                    $crate::syn::IntSuffix::I8
                                 },
                                 "i16" => {
-                                    ::lazy_static_include::syn::IntSuffix::I16
+                                    $crate::syn::IntSuffix::I16
                                 },
                                 "i32" => {
-                                    ::lazy_static_include::syn::IntSuffix::I32
+                                    $crate::syn::IntSuffix::I32
                                 },
                                 "i64" => {
-                                    ::lazy_static_include::syn::IntSuffix::I64
+                                    $crate::syn::IntSuffix::I64
                                 },
                                 _ => unreachable!()
                             };
 
                             let suffix = n.suffix();
 
-                            if suffix != ::lazy_static_include::syn::IntSuffix::None && suffix != accept_suffix {
+                            if suffix != $crate::syn::IntSuffix::None && suffix != accept_suffix {
                                 panic!("incorrect element type, index = {}, file: {}", i, path);
                             }
 
@@ -519,7 +519,7 @@ macro_rules! lazy_static_include_array_inner_i {
     }
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_i128 {
@@ -527,7 +527,7 @@ macro_rules! lazy_static_include_array_inner_i128 {
         {
             use ::std::fs::File;
             use ::std::io::Read;
-            use ::lazy_static_include::starts_ends_with_caseless::EndsWithCaseless;
+            use $crate::starts_ends_with_caseless::EndsWithCaseless;
 
             let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
@@ -547,7 +547,7 @@ macro_rules! lazy_static_include_array_inner_i128 {
 
             let mut result = [0 as $t; $s];
 
-            if let Ok(::lazy_static_include::syn::Expr::Array(array)) = ::lazy_static_include::syn::parse_str(s) {
+            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
@@ -556,14 +556,14 @@ macro_rules! lazy_static_include_array_inner_i128 {
                     let mut neg = false;
 
                     let exp = match l {
-                        ::lazy_static_include::syn::Expr::Lit(exp) => {
+                        $crate::syn::Expr::Lit(exp) => {
                             exp
                         }
-                        ::lazy_static_include::syn::Expr::Unary(exp) => {
+                        $crate::syn::Expr::Unary(exp) => {
                             neg = true;
 
                             match exp.expr.as_ref() {
-                                ::lazy_static_include::syn::Expr::Lit(exp) => {
+                                $crate::syn::Expr::Lit(exp) => {
                                     exp.clone()
                                 }
                                 _ => {
@@ -577,7 +577,7 @@ macro_rules! lazy_static_include_array_inner_i128 {
                     };
 
                     match exp.lit {
-                        ::lazy_static_include::syn::Lit::Verbatim(v) => {
+                        $crate::syn::Lit::Verbatim(v) => {
                             let s = v.token.to_string();
 
                             let s = if s.ends_with_caseless_ascii("i128") {
@@ -592,10 +592,10 @@ macro_rules! lazy_static_include_array_inner_i128 {
 
                             result[i] = n;
                         }
-                        ::lazy_static_include::syn::Lit::Int(n) => {
+                        $crate::syn::Lit::Int(n) => {
                             let suffix = n.suffix();
 
-                            if suffix != ::lazy_static_include::syn::IntSuffix::None && suffix != ::lazy_static_include::syn::IntSuffix::I128 {
+                            if suffix != $crate::syn::IntSuffix::None && suffix != $crate::syn::IntSuffix::I128 {
                                 panic!("incorrect element type, index = {}, file: {}", i, path);
                             }
 
@@ -619,7 +619,7 @@ macro_rules! lazy_static_include_array_inner_i128 {
     }
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_f32 {
@@ -627,8 +627,8 @@ macro_rules! lazy_static_include_array_inner_f32 {
         {
             use ::std::fs::File;
             use ::std::io::Read;
-            use ::lazy_static_include::syn::export::ToTokens;
-            use ::lazy_static_include::starts_ends_with_caseless::EndsWithCaseless;
+            use $crate::syn::export::ToTokens;
+            use $crate::starts_ends_with_caseless::EndsWithCaseless;
 
             let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
@@ -648,7 +648,7 @@ macro_rules! lazy_static_include_array_inner_f32 {
 
             let mut result = [0 as $t; $s];
 
-            if let Ok(::lazy_static_include::syn::Expr::Array(array)) = ::lazy_static_include::syn::parse_str(s) {
+            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
@@ -657,14 +657,14 @@ macro_rules! lazy_static_include_array_inner_f32 {
                     let mut neg = false;
 
                     let exp = match l {
-                        ::lazy_static_include::syn::Expr::Lit(exp) => {
+                        $crate::syn::Expr::Lit(exp) => {
                             exp
                         }
-                        ::lazy_static_include::syn::Expr::Unary(exp) => {
+                        $crate::syn::Expr::Unary(exp) => {
                             neg = true;
 
                             match exp.expr.as_ref() {
-                                ::lazy_static_include::syn::Expr::Lit(exp) => {
+                                $crate::syn::Expr::Lit(exp) => {
                                     exp.clone()
                                 }
                                 _ => {
@@ -678,8 +678,8 @@ macro_rules! lazy_static_include_array_inner_f32 {
                     };
 
                     match exp.lit {
-                        ::lazy_static_include::syn::Lit::Float(f) => {
-                            if f.suffix() == ::lazy_static_include::syn::FloatSuffix::F64 {
+                        $crate::syn::Lit::Float(f) => {
+                            if f.suffix() == $crate::syn::FloatSuffix::F64 {
                                 panic!("incorrect element type, index = {}, file: {}", i, path);
                             }
 
@@ -691,7 +691,7 @@ macro_rules! lazy_static_include_array_inner_f32 {
 
                             result[i] = f as f32;
                         }
-                        ::lazy_static_include::syn::Lit::Int(n) => {
+                        $crate::syn::Lit::Int(n) => {
                             let f = n.value() as f32;
 
                             let ts = n.into_token_stream();
@@ -724,7 +724,7 @@ macro_rules! lazy_static_include_array_inner_f32 {
     }
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_f64 {
@@ -732,8 +732,8 @@ macro_rules! lazy_static_include_array_inner_f64 {
         {
             use ::std::fs::File;
             use ::std::io::Read;
-            use ::lazy_static_include::syn::export::ToTokens;
-            use ::lazy_static_include::starts_ends_with_caseless::EndsWithCaseless;
+            use $crate::syn::export::ToTokens;
+            use $crate::starts_ends_with_caseless::EndsWithCaseless;
 
             let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
@@ -753,7 +753,7 @@ macro_rules! lazy_static_include_array_inner_f64 {
 
             let mut result = [0 as $t; $s];
 
-            if let Ok(::lazy_static_include::syn::Expr::Array(array)) = ::lazy_static_include::syn::parse_str(s) {
+            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
@@ -762,14 +762,14 @@ macro_rules! lazy_static_include_array_inner_f64 {
                     let mut neg = false;
 
                     let exp = match l {
-                        ::lazy_static_include::syn::Expr::Lit(exp) => {
+                        $crate::syn::Expr::Lit(exp) => {
                             exp
                         }
-                        ::lazy_static_include::syn::Expr::Unary(exp) => {
+                        $crate::syn::Expr::Unary(exp) => {
                             neg = true;
 
                             match exp.expr.as_ref() {
-                                ::lazy_static_include::syn::Expr::Lit(exp) => {
+                                $crate::syn::Expr::Lit(exp) => {
                                     exp.clone()
                                 }
                                 _ => {
@@ -783,8 +783,8 @@ macro_rules! lazy_static_include_array_inner_f64 {
                     };
 
                     match exp.lit {
-                        ::lazy_static_include::syn::Lit::Float(f) => {
-                            if f.suffix() == ::lazy_static_include::syn::FloatSuffix::F32 {
+                        $crate::syn::Lit::Float(f) => {
+                            if f.suffix() == $crate::syn::FloatSuffix::F32 {
                                 panic!("incorrect element type, index = {}, file: {}", i, path);
                             }
 
@@ -796,7 +796,7 @@ macro_rules! lazy_static_include_array_inner_f64 {
 
                             result[i] = f as f64;
                         }
-                        ::lazy_static_include::syn::Lit::Int(n) => {
+                        $crate::syn::Lit::Int(n) => {
                             let f = n.value() as f64;
 
                             let ts = n.into_token_stream();
@@ -829,7 +829,7 @@ macro_rules! lazy_static_include_array_inner_f64 {
     }
 }
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
+#[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner {

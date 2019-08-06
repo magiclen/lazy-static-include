@@ -111,19 +111,6 @@ assert_eq!("Hello", TEST[1]);
 assert_eq!("哈囉", TEST[2]);
 ```
 
-## No Std
-
-This crate can work without std, but the `lazy_static_include_array` macro will be disabled unless using the **release** profile.
-
-Enable the feature **no_std** to compile this crate without std.
-
-```toml
-[dependencies.lazy-static-include]
-version = "*"
-features = ["no_std"]
-default-features = false
-```
-
 ## Benchmark
 
 Using static mechanisms makes your program faster. See my benchmark result below (Intel i7-6700HQ, ran on 2019/07/16):
@@ -149,13 +136,9 @@ cargo bench
 ```
 */
 
-#![cfg_attr(feature = "no_std", no_std)]
-
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
 #[doc(hidden)]
 pub extern crate syn;
 
-#[cfg(all(debug_assertions, not(feature = "no_std")))]
 #[doc(hidden)]
 pub extern crate starts_ends_with_caseless;
 
