@@ -66,521 +66,295 @@ macro_rules! lazy_static_include_array_inner {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_b {
-    ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use ::std::mem;
+    ($name:ident : [$t:ident; $s:expr], $path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
+        use std::mem;
 
-            let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
-            let v = {
-                let mut f = File::open(&path).unwrap();
+        let v = {
+            let mut f = File::open(&path).unwrap();
 
-                let mut v: Vec<u8> = Vec::new();
+            let mut v: Vec<u8> = Vec::new();
 
-                f.read_to_end(&mut v).unwrap();
+            f.read_to_end(&mut v).unwrap();
 
-                v
-            };
+            v
+        };
 
-            let s = String::from_utf8(v).unwrap();
+        let s = String::from_utf8(v).unwrap();
 
-            let s = s.trim();
+        let s = s.trim();
 
-            let mut result = [false; $s];
+        let mut result = [false; $s];
 
-            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
-                for (i, l) in array.elems.into_iter().enumerate() {
-                    if i >= $s {
-                        panic!("incorrect length, bigger than {}, file: {}", $s, path);
-                    }
-
-                    if let $crate::syn::Expr::Lit(exp) = l {
-                        match exp.lit {
-                            $crate::syn::Lit::Bool(b) => {
-                                result[i] = b.value;
-                            }
-                            _ => {
-                                panic!("incorrect element type, index = {}, file: {}", i, path);
-                            }
-                        }
-                    } else {
-                        panic!("incorrect element type, index = {}, file: {}", i, path);
-                    }
+        if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
+            for (i, l) in array.elems.into_iter().enumerate() {
+                if i >= $s {
+                    panic!("incorrect length, bigger than {}, file: {}", $s, path);
                 }
 
-                result
-            } else {
-                panic!("incorrect array, file: {}", path);
+                if let $crate::syn::Expr::Lit(exp) = l {
+                    match exp.lit {
+                        $crate::syn::Lit::Bool(b) => {
+                            result[i] = b.value;
+                        }
+                        _ => {
+                            panic!("incorrect element type, index = {}, file: {}", i, path);
+                        }
+                    }
+                } else {
+                    panic!("incorrect element type, index = {}, file: {}", i, path);
+                }
             }
+
+            result
+        } else {
+            panic!("incorrect array, file: {}", path);
         }
-    }
+    }};
 }
 
 #[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_c {
-    ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use ::std::mem;
+    ($name:ident : [$t:ident; $s:expr], $path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
+        use std::mem;
 
-            let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
-            let v = {
-                let mut f = File::open(&path).unwrap();
+        let v = {
+            let mut f = File::open(&path).unwrap();
 
-                let mut v: Vec<u8> = Vec::new();
+            let mut v: Vec<u8> = Vec::new();
 
-                f.read_to_end(&mut v).unwrap();
+            f.read_to_end(&mut v).unwrap();
 
-                v
-            };
+            v
+        };
 
-            let s = String::from_utf8(v).unwrap();
+        let s = String::from_utf8(v).unwrap();
 
-            let s = s.trim();
+        let s = s.trim();
 
-            let mut result = ['\0'; $s];
+        let mut result = ['\0'; $s];
 
-            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
-                for (i, l) in array.elems.into_iter().enumerate() {
-                    if i >= $s {
-                        panic!("incorrect length, bigger than {}, file: {}", $s, path);
-                    }
-
-                    if let $crate::syn::Expr::Lit(exp) = l {
-                        match exp.lit {
-                            $crate::syn::Lit::Char(c) => {
-                                result[i] = c.value();
-                            }
-                            _ => {
-                                panic!("incorrect element type, index = {}, file: {}", i, path);
-                            }
-                        }
-                    } else {
-                        panic!("incorrect element type, index = {}, file: {}", i, path);
-                    }
+        if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
+            for (i, l) in array.elems.into_iter().enumerate() {
+                if i >= $s {
+                    panic!("incorrect length, bigger than {}, file: {}", $s, path);
                 }
 
-                result
-            } else {
-                panic!("incorrect array, file: {}", path);
+                if let $crate::syn::Expr::Lit(exp) = l {
+                    match exp.lit {
+                        $crate::syn::Lit::Char(c) => {
+                            result[i] = c.value();
+                        }
+                        _ => {
+                            panic!("incorrect element type, index = {}, file: {}", i, path);
+                        }
+                    }
+                } else {
+                    panic!("incorrect element type, index = {}, file: {}", i, path);
+                }
             }
+
+            result
+        } else {
+            panic!("incorrect array, file: {}", path);
         }
-    }
+    }};
 }
 
 #[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_s {
-    ( $name:ident: [&'static str; $s:expr], $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use ::std::mem;
+    ($name:ident : [&'static str; $s:expr], $path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
+        use std::mem;
 
-            let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
-            let v = {
-                let mut f = File::open(&path).unwrap();
+        let v = {
+            let mut f = File::open(&path).unwrap();
 
-                let mut v: Vec<u8> = Vec::new();
+            let mut v: Vec<u8> = Vec::new();
 
-                f.read_to_end(&mut v).unwrap();
+            f.read_to_end(&mut v).unwrap();
 
-                v
+            v
+        };
+
+        let s = String::from_utf8(v).unwrap();
+
+        let s = s.trim();
+
+        let mut result = Vec::with_capacity($s);
+
+        if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
+            for (i, l) in array.elems.into_iter().enumerate() {
+                if i >= $s {
+                    panic!("incorrect length, bigger than {}, file: {}", $s, path);
+                }
+
+                if let $crate::syn::Expr::Lit(exp) = l {
+                    match exp.lit {
+                        $crate::syn::Lit::Str(s) => {
+                            result.push(s.value());
+                        }
+                        _ => {
+                            panic!("incorrect element type, index = {}, file: {}", i, path);
+                        }
+                    }
+                } else {
+                    panic!("incorrect element type, index = {}, file: {}", i, path);
+                }
+            }
+
+            let mut result_str = [""; $s];
+
+            for (i, s) in result.iter().enumerate() {
+                result_str[i] = unsafe {
+                    let ret = mem::transmute(s.as_str());
+                    ret
+                };
+            }
+
+            unsafe {
+                mem::forget(result);
             };
 
-            let s = String::from_utf8(v).unwrap();
-
-            let s = s.trim();
-
-            let mut result = Vec::with_capacity($s);
-
-            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
-                for (i, l) in array.elems.into_iter().enumerate() {
-                    if i >= $s {
-                        panic!("incorrect length, bigger than {}, file: {}", $s, path);
-                    }
-
-                    if let $crate::syn::Expr::Lit(exp) = l {
-                        match exp.lit {
-                            $crate::syn::Lit::Str(s) => {
-                                result.push(s.value());
-                            }
-                            _ => {
-                                panic!("incorrect element type, index = {}, file: {}", i, path);
-                            }
-                        }
-                    } else {
-                        panic!("incorrect element type, index = {}, file: {}", i, path);
-                    }
-                }
-
-                let mut result_str = [""; $s];
-
-                for (i, s) in result.iter().enumerate() {
-                    result_str[i] = unsafe {
-                        let ret = mem::transmute(s.as_str());
-                        ret
-                    };
-                }
-
-                unsafe {
-                    mem::forget(result);
-                };
-
-                result_str
-            } else {
-                panic!("incorrect array, file: {}", path);
-            }
+            result_str
+        } else {
+            panic!("incorrect array, file: {}", path);
         }
-    }
+    }};
 }
 
 #[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_u {
-    ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
+    ($name:ident : [$t:ident; $s:expr], $path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
 
-            let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
-            let v = {
-                let mut f = File::open(&path).unwrap();
+        let v = {
+            let mut f = File::open(&path).unwrap();
 
-                let mut v: Vec<u8> = Vec::new();
+            let mut v: Vec<u8> = Vec::new();
 
-                f.read_to_end(&mut v).unwrap();
+            f.read_to_end(&mut v).unwrap();
 
-                v
-            };
+            v
+        };
 
-            let s = String::from_utf8(v).unwrap();
+        let s = String::from_utf8(v).unwrap();
 
-            let s = s.trim();
+        let s = s.trim();
 
-            let mut result = [0 as $t; $s];
+        let mut result = [0 as $t; $s];
 
-            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
-                for (i, l) in array.elems.into_iter().enumerate() {
-                    if i >= $s {
-                        panic!("incorrect length, bigger than {}, file: {}", $s, path);
-                    }
-
-                    if let $crate::syn::Expr::Lit(exp) = l {
-                        match exp.lit {
-                            $crate::syn::Lit::Int(u) => {
-                                let accept_suffix = match stringify!($t) {
-                                    "usize" => {
-                                        $crate::syn::IntSuffix::Usize
-                                    },
-                                    "u8" => {
-                                        $crate::syn::IntSuffix::U8
-                                    },
-                                    "u16" => {
-                                        $crate::syn::IntSuffix::U16
-                                    },
-                                    "u32" => {
-                                        $crate::syn::IntSuffix::U32
-                                    },
-                                    "u64" => {
-                                        $crate::syn::IntSuffix::U64
-                                    },
-                                    _ => unreachable!()
-                                };
-
-                                let suffix = u.suffix();
-
-                                if suffix != $crate::syn::IntSuffix::None && suffix != accept_suffix {
-                                    panic!("incorrect element type, index = {}, file: {}", i, path);
-                                }
-
-                                let u = u.value();
-
-                                if u > $t::max_value() as u64 {
-                                    panic!("incorrect element, index = {}, bigger than {}, file: {}", i, $t::max_value(), path);
-                                }
-
-                                result[i] = u as $t;
-                            }
-                            _ => {
-                                panic!("incorrect element type, index = {}, file: {}", i, path);
-                            }
-                        }
-                    } else {
-                        panic!("incorrect element type, index = {}, file: {}", i, path);
-                    }
+        if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
+            for (i, l) in array.elems.into_iter().enumerate() {
+                if i >= $s {
+                    panic!("incorrect length, bigger than {}, file: {}", $s, path);
                 }
 
-                result
-            } else {
-                panic!("incorrect array, file: {}", path);
+                if let $crate::syn::Expr::Lit(exp) = l {
+                    match exp.lit {
+                        $crate::syn::Lit::Int(u) => {
+                            let accept_suffix = match stringify!($t) {
+                                "usize" => $crate::syn::IntSuffix::Usize,
+                                "u8" => $crate::syn::IntSuffix::U8,
+                                "u16" => $crate::syn::IntSuffix::U16,
+                                "u32" => $crate::syn::IntSuffix::U32,
+                                "u64" => $crate::syn::IntSuffix::U64,
+                                _ => unreachable!(),
+                            };
+
+                            let suffix = u.suffix();
+
+                            if suffix != $crate::syn::IntSuffix::None && suffix != accept_suffix {
+                                panic!("incorrect element type, index = {}, file: {}", i, path);
+                            }
+
+                            let u = u.value();
+
+                            if u > $t::max_value() as u64 {
+                                panic!(
+                                    "incorrect element, index = {}, bigger than {}, file: {}",
+                                    i,
+                                    $t::max_value(),
+                                    path
+                                );
+                            }
+
+                            result[i] = u as $t;
+                        }
+                        _ => {
+                            panic!("incorrect element type, index = {}, file: {}", i, path);
+                        }
+                    }
+                } else {
+                    panic!("incorrect element type, index = {}, file: {}", i, path);
+                }
             }
+
+            result
+        } else {
+            panic!("incorrect array, file: {}", path);
         }
-    }
+    }};
 }
 
 #[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_u128 {
-    ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use $crate::starts_ends_with_caseless::EndsWithCaseless;
+    ($name:ident : [$t:ident; $s:expr], $path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
+        use $crate::starts_ends_with_caseless::EndsWithCaseless;
 
-            let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
-            let v = {
-                let mut f = File::open(&path).unwrap();
+        let v = {
+            let mut f = File::open(&path).unwrap();
 
-                let mut v: Vec<u8> = Vec::new();
+            let mut v: Vec<u8> = Vec::new();
 
-                f.read_to_end(&mut v).unwrap();
+            f.read_to_end(&mut v).unwrap();
 
-                v
-            };
+            v
+        };
 
-            let s = String::from_utf8(v).unwrap();
+        let s = String::from_utf8(v).unwrap();
 
-            let s = s.trim();
+        let s = s.trim();
 
-            let mut result = [0 as $t; $s];
+        let mut result = [0 as $t; $s];
 
-            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
-                for (i, l) in array.elems.into_iter().enumerate() {
-                    if i >= $s {
-                        panic!("incorrect length, bigger than {}, file: {}", $s, path);
-                    }
-
-                    if let $crate::syn::Expr::Lit(exp) = l {
-                        match exp.lit {
-                            $crate::syn::Lit::Verbatim(v) => {
-                                let s = v.token.to_string();
-
-                                let s = if s.ends_with_caseless_ascii("u128") {
-                                    &s[..s.len() - 4]
-                                } else {
-                                    &s
-                                };
-
-                                let s = s.replace("_", "");
-
-                                let u: u128 = s.parse().unwrap();
-
-                                result[i] = u;
-                            }
-                            $crate::syn::Lit::Int(u) => {
-                                let suffix = u.suffix();
-
-                                if suffix != $crate::syn::IntSuffix::None && suffix != $crate::syn::IntSuffix::U128 {
-                                    panic!("incorrect element type, index = {}, file: {}", i, path);
-                                }
-
-                                result[i] = u.value() as u128;
-                            }
-                            _ => {
-                                panic!("incorrect element type, index = {}, file: {}", i, path);
-                            }
-                        }
-                    } else {
-                        panic!("incorrect element type, index = {}, file: {}", i, path);
-                    }
+        if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
+            for (i, l) in array.elems.into_iter().enumerate() {
+                if i >= $s {
+                    panic!("incorrect length, bigger than {}, file: {}", $s, path);
                 }
 
-                result
-            } else {
-                panic!("incorrect array, file: {}", path);
-            }
-        }
-    }
-}
-
-#[cfg(debug_assertions)]
-#[doc(hidden)]
-#[macro_export]
-macro_rules! lazy_static_include_array_inner_i {
-    ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-
-            let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
-
-            let v = {
-                let mut f = File::open(&path).unwrap();
-
-                let mut v: Vec<u8> = Vec::new();
-
-                f.read_to_end(&mut v).unwrap();
-
-                v
-            };
-
-            let s = String::from_utf8(v).unwrap();
-
-            let s = s.trim();
-
-            let mut result = [0 as $t; $s];
-
-            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
-                for (i, l) in array.elems.into_iter().enumerate() {
-                    if i >= $s {
-                        panic!("incorrect length, bigger than {}, file: {}", $s, path);
-                    }
-
-                    let mut neg = false;
-
-                    let exp = match l {
-                        $crate::syn::Expr::Lit(exp) => {
-                            exp
-                        }
-                        $crate::syn::Expr::Unary(exp) => {
-                            neg = true;
-
-                            match exp.expr.as_ref() {
-                                $crate::syn::Expr::Lit(exp) => {
-                                    exp.clone()
-                                }
-                                _ => {
-                                    panic!("incorrect element type, index = {}, file: {}", i, path);
-                                }
-                            }
-                        }
-                        _ => {
-                            panic!("incorrect element type, index = {}, file: {}", i, path);
-                        }
-                    };
-
-                    match exp.lit {
-                        $crate::syn::Lit::Int(n) => {
-                            let accept_suffix = match stringify!($t) {
-                                "isize" => {
-                                    $crate::syn::IntSuffix::Isize
-                                },
-                                "i8" => {
-                                    $crate::syn::IntSuffix::I8
-                                },
-                                "i16" => {
-                                    $crate::syn::IntSuffix::I16
-                                },
-                                "i32" => {
-                                    $crate::syn::IntSuffix::I32
-                                },
-                                "i64" => {
-                                    $crate::syn::IntSuffix::I64
-                                },
-                                _ => unreachable!()
-                            };
-
-                            let suffix = n.suffix();
-
-                            if suffix != $crate::syn::IntSuffix::None && suffix != accept_suffix {
-                                panic!("incorrect element type, index = {}, file: {}", i, path);
-                            }
-
-                            let n = n.value();
-
-                            if neg {
-                                if -1 * (n as i128) < $t::min_value() as i128 {
-                                    panic!("incorrect element, index = {}, smaller than {}, file: {}", i, $t::min_value(), path);
-                                }
-
-                                result[i] = -1 * (n as $t);
-                            } else {
-                                if n > $t::max_value() as u64 {
-                                    panic!("incorrect element, index = {}, bigger than {}, file: {}", i, $t::max_value(), path);
-                                }
-
-                                result[i] = n as $t;
-                            }
-                        }
-                        _ => {
-                            panic!("incorrect element type, index = {}, file: {}", i, path);
-                        }
-                    }
-                }
-
-                result
-            } else {
-                panic!("incorrect array, file: {}", path);
-            }
-        }
-    }
-}
-
-#[cfg(debug_assertions)]
-#[doc(hidden)]
-#[macro_export]
-macro_rules! lazy_static_include_array_inner_i128 {
-    ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use $crate::starts_ends_with_caseless::EndsWithCaseless;
-
-            let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
-
-            let v = {
-                let mut f = File::open(&path).unwrap();
-
-                let mut v: Vec<u8> = Vec::new();
-
-                f.read_to_end(&mut v).unwrap();
-
-                v
-            };
-
-            let s = String::from_utf8(v).unwrap();
-
-            let s = s.trim();
-
-            let mut result = [0 as $t; $s];
-
-            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
-                for (i, l) in array.elems.into_iter().enumerate() {
-                    if i >= $s {
-                        panic!("incorrect length, bigger than {}, file: {}", $s, path);
-                    }
-
-                    let mut neg = false;
-
-                    let exp = match l {
-                        $crate::syn::Expr::Lit(exp) => {
-                            exp
-                        }
-                        $crate::syn::Expr::Unary(exp) => {
-                            neg = true;
-
-                            match exp.expr.as_ref() {
-                                $crate::syn::Expr::Lit(exp) => {
-                                    exp.clone()
-                                }
-                                _ => {
-                                    panic!("incorrect element type, index = {}, file: {}", i, path);
-                                }
-                            }
-                        }
-                        _ => {
-                            panic!("incorrect element type, index = {}, file: {}", i, path);
-                        }
-                    };
-
+                if let $crate::syn::Expr::Lit(exp) = l {
                     match exp.lit {
                         $crate::syn::Lit::Verbatim(v) => {
                             let s = v.token.to_string();
 
-                            let s = if s.ends_with_caseless_ascii("i128") {
+                            let s = if s.ends_with_caseless_ascii("u128") {
                                 &s[..s.len() - 4]
                             } else {
                                 &s
@@ -588,245 +362,436 @@ macro_rules! lazy_static_include_array_inner_i128 {
 
                             let s = s.replace("_", "");
 
-                            let n: i128 = s.parse().unwrap();
+                            let u: u128 = s.parse().unwrap();
 
-                            result[i] = n;
+                            result[i] = u;
                         }
-                        $crate::syn::Lit::Int(n) => {
-                            let suffix = n.suffix();
+                        $crate::syn::Lit::Int(u) => {
+                            let suffix = u.suffix();
 
-                            if suffix != $crate::syn::IntSuffix::None && suffix != $crate::syn::IntSuffix::I128 {
+                            if suffix != $crate::syn::IntSuffix::None
+                                && suffix != $crate::syn::IntSuffix::U128
+                            {
                                 panic!("incorrect element type, index = {}, file: {}", i, path);
                             }
 
-                            if neg {
-                                result[i] = -1 * (n.value() as i128);
-                            } else {
-                                result[i] = n.value() as i128;
-                            }
+                            result[i] = u.value() as u128;
                         }
                         _ => {
                             panic!("incorrect element type, index = {}, file: {}", i, path);
                         }
                     }
+                } else {
+                    panic!("incorrect element type, index = {}, file: {}", i, path);
+                }
+            }
+
+            result
+        } else {
+            panic!("incorrect array, file: {}", path);
+        }
+    }};
+}
+
+#[cfg(debug_assertions)]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! lazy_static_include_array_inner_i {
+    ($name:ident : [$t:ident; $s:expr], $path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
+
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
+
+        let v = {
+            let mut f = File::open(&path).unwrap();
+
+            let mut v: Vec<u8> = Vec::new();
+
+            f.read_to_end(&mut v).unwrap();
+
+            v
+        };
+
+        let s = String::from_utf8(v).unwrap();
+
+        let s = s.trim();
+
+        let mut result = [0 as $t; $s];
+
+        if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
+            for (i, l) in array.elems.into_iter().enumerate() {
+                if i >= $s {
+                    panic!("incorrect length, bigger than {}, file: {}", $s, path);
                 }
 
-                result
-            } else {
-                panic!("incorrect array, file: {}", path);
+                let mut neg = false;
+
+                let exp = match l {
+                    $crate::syn::Expr::Lit(exp) => exp,
+                    $crate::syn::Expr::Unary(exp) => {
+                        neg = true;
+
+                        match exp.expr.as_ref() {
+                            $crate::syn::Expr::Lit(exp) => exp.clone(),
+                            _ => {
+                                panic!("incorrect element type, index = {}, file: {}", i, path);
+                            }
+                        }
+                    }
+                    _ => {
+                        panic!("incorrect element type, index = {}, file: {}", i, path);
+                    }
+                };
+
+                match exp.lit {
+                    $crate::syn::Lit::Int(n) => {
+                        let accept_suffix = match stringify!($t) {
+                            "isize" => $crate::syn::IntSuffix::Isize,
+                            "i8" => $crate::syn::IntSuffix::I8,
+                            "i16" => $crate::syn::IntSuffix::I16,
+                            "i32" => $crate::syn::IntSuffix::I32,
+                            "i64" => $crate::syn::IntSuffix::I64,
+                            _ => unreachable!(),
+                        };
+
+                        let suffix = n.suffix();
+
+                        if suffix != $crate::syn::IntSuffix::None && suffix != accept_suffix {
+                            panic!("incorrect element type, index = {}, file: {}", i, path);
+                        }
+
+                        let n = n.value();
+
+                        if neg {
+                            if -(n as i128) < $t::min_value() as i128 {
+                                panic!(
+                                    "incorrect element, index = {}, smaller than {}, file: {}",
+                                    i,
+                                    $t::min_value(),
+                                    path
+                                );
+                            }
+
+                            result[i] = -(n as $t);
+                        } else {
+                            if n > $t::max_value() as u64 {
+                                panic!(
+                                    "incorrect element, index = {}, bigger than {}, file: {}",
+                                    i,
+                                    $t::max_value(),
+                                    path
+                                );
+                            }
+
+                            result[i] = n as $t;
+                        }
+                    }
+                    _ => {
+                        panic!("incorrect element type, index = {}, file: {}", i, path);
+                    }
+                }
             }
+
+            result
+        } else {
+            panic!("incorrect array, file: {}", path);
         }
-    }
+    }};
+}
+
+#[cfg(debug_assertions)]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! lazy_static_include_array_inner_i128 {
+    ($name:ident : [$t:ident; $s:expr], $path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
+        use $crate::starts_ends_with_caseless::EndsWithCaseless;
+
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
+
+        let v = {
+            let mut f = File::open(&path).unwrap();
+
+            let mut v: Vec<u8> = Vec::new();
+
+            f.read_to_end(&mut v).unwrap();
+
+            v
+        };
+
+        let s = String::from_utf8(v).unwrap();
+
+        let s = s.trim();
+
+        let mut result = [0 as $t; $s];
+
+        if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
+            for (i, l) in array.elems.into_iter().enumerate() {
+                if i >= $s {
+                    panic!("incorrect length, bigger than {}, file: {}", $s, path);
+                }
+
+                let mut neg = false;
+
+                let exp = match l {
+                    $crate::syn::Expr::Lit(exp) => exp,
+                    $crate::syn::Expr::Unary(exp) => {
+                        neg = true;
+
+                        match exp.expr.as_ref() {
+                            $crate::syn::Expr::Lit(exp) => exp.clone(),
+                            _ => {
+                                panic!("incorrect element type, index = {}, file: {}", i, path);
+                            }
+                        }
+                    }
+                    _ => {
+                        panic!("incorrect element type, index = {}, file: {}", i, path);
+                    }
+                };
+
+                match exp.lit {
+                    $crate::syn::Lit::Verbatim(v) => {
+                        let s = v.token.to_string();
+
+                        let s = if s.ends_with_caseless_ascii("i128") {
+                            &s[..s.len() - 4]
+                        } else {
+                            &s
+                        };
+
+                        let s = s.replace("_", "");
+
+                        let n: i128 = s.parse().unwrap();
+
+                        result[i] = n;
+                    }
+                    $crate::syn::Lit::Int(n) => {
+                        let suffix = n.suffix();
+
+                        if suffix != $crate::syn::IntSuffix::None
+                            && suffix != $crate::syn::IntSuffix::I128
+                        {
+                            panic!("incorrect element type, index = {}, file: {}", i, path);
+                        }
+
+                        if neg {
+                            result[i] = -(n.value() as i128);
+                        } else {
+                            result[i] = n.value() as i128;
+                        }
+                    }
+                    _ => {
+                        panic!("incorrect element type, index = {}, file: {}", i, path);
+                    }
+                }
+            }
+
+            result
+        } else {
+            panic!("incorrect array, file: {}", path);
+        }
+    }};
 }
 
 #[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_f32 {
-    ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use $crate::syn::export::ToTokens;
-            use $crate::starts_ends_with_caseless::EndsWithCaseless;
+    ($name:ident : [$t:ident; $s:expr], $path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
+        use $crate::starts_ends_with_caseless::EndsWithCaseless;
+        use $crate::syn::export::ToTokens;
 
-            let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
-            let v = {
-                let mut f = File::open(&path).unwrap();
+        let v = {
+            let mut f = File::open(&path).unwrap();
 
-                let mut v: Vec<u8> = Vec::new();
+            let mut v: Vec<u8> = Vec::new();
 
-                f.read_to_end(&mut v).unwrap();
+            f.read_to_end(&mut v).unwrap();
 
-                v
-            };
+            v
+        };
 
-            let s = String::from_utf8(v).unwrap();
+        let s = String::from_utf8(v).unwrap();
 
-            let s = s.trim();
+        let s = s.trim();
 
-            let mut result = [0 as $t; $s];
+        let mut result = [0 as $t; $s];
 
-            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
-                for (i, l) in array.elems.into_iter().enumerate() {
-                    if i >= $s {
-                        panic!("incorrect length, bigger than {}, file: {}", $s, path);
-                    }
+        if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
+            for (i, l) in array.elems.into_iter().enumerate() {
+                if i >= $s {
+                    panic!("incorrect length, bigger than {}, file: {}", $s, path);
+                }
 
-                    let mut neg = false;
+                let mut neg = false;
 
-                    let exp = match l {
-                        $crate::syn::Expr::Lit(exp) => {
-                            exp
-                        }
-                        $crate::syn::Expr::Unary(exp) => {
-                            neg = true;
+                let exp = match l {
+                    $crate::syn::Expr::Lit(exp) => exp,
+                    $crate::syn::Expr::Unary(exp) => {
+                        neg = true;
 
-                            match exp.expr.as_ref() {
-                                $crate::syn::Expr::Lit(exp) => {
-                                    exp.clone()
-                                }
-                                _ => {
-                                    panic!("incorrect element type, index = {}, file: {}", i, path);
-                                }
-                            }
-                        }
-                        _ => {
-                            panic!("incorrect element type, index = {}, file: {}", i, path);
-                        }
-                    };
-
-                    match exp.lit {
-                        $crate::syn::Lit::Float(f) => {
-                            if f.suffix() == $crate::syn::FloatSuffix::F64 {
+                        match exp.expr.as_ref() {
+                            $crate::syn::Expr::Lit(exp) => exp.clone(),
+                            _ => {
                                 panic!("incorrect element type, index = {}, file: {}", i, path);
                             }
+                        }
+                    }
+                    _ => {
+                        panic!("incorrect element type, index = {}, file: {}", i, path);
+                    }
+                };
 
+                match exp.lit {
+                    $crate::syn::Lit::Float(f) => {
+                        if f.suffix() == $crate::syn::FloatSuffix::F64 {
+                            panic!("incorrect element type, index = {}, file: {}", i, path);
+                        }
+
+                        let f = if neg {
+                            -1.0 * f.value()
+                        } else {
+                            f.value()
+                        };
+
+                        result[i] = f as f32;
+                    }
+                    $crate::syn::Lit::Int(n) => {
+                        let f = n.value() as f32;
+
+                        let ts = n.into_token_stream();
+
+                        let s = ts.into_iter().next().unwrap().to_string();
+
+                        if s.ends_with_caseless_ascii("f32") {
                             let f = if neg {
-                                -1.0 * f.value()
+                                -1.0 * f
                             } else {
-                                f.value()
+                                f
                             };
 
                             result[i] = f as f32;
-                        }
-                        $crate::syn::Lit::Int(n) => {
-                            let f = n.value() as f32;
-
-                            let ts = n.into_token_stream();
-
-                            let s = ts.into_iter().next().unwrap().to_string();
-
-                            if s.ends_with_caseless_ascii("f32") {
-                                let f = if neg {
-                                    -1.0 * f
-                                } else {
-                                    f
-                                };
-
-                                result[i] = f as f32;
-                            } else {
-                                panic!("incorrect element type, index = {}, file: {}", i, path);
-                            }
-                        }
-                        _ => {
+                        } else {
                             panic!("incorrect element type, index = {}, file: {}", i, path);
                         }
                     }
+                    _ => {
+                        panic!("incorrect element type, index = {}, file: {}", i, path);
+                    }
                 }
-
-                result
-            } else {
-                panic!("incorrect array, file: {}", path);
             }
+
+            result
+        } else {
+            panic!("incorrect array, file: {}", path);
         }
-    }
+    }};
 }
 
 #[cfg(debug_assertions)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_array_inner_f64 {
-    ( $name:ident: [$t:ident; $s:expr], $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use $crate::syn::export::ToTokens;
-            use $crate::starts_ends_with_caseless::EndsWithCaseless;
+    ($name:ident : [$t:ident; $s:expr], $path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
+        use $crate::starts_ends_with_caseless::EndsWithCaseless;
+        use $crate::syn::export::ToTokens;
 
-            let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
 
-            let v = {
-                let mut f = File::open(&path).unwrap();
+        let v = {
+            let mut f = File::open(&path).unwrap();
 
-                let mut v: Vec<u8> = Vec::new();
+            let mut v: Vec<u8> = Vec::new();
 
-                f.read_to_end(&mut v).unwrap();
+            f.read_to_end(&mut v).unwrap();
 
-                v
-            };
+            v
+        };
 
-            let s = String::from_utf8(v).unwrap();
+        let s = String::from_utf8(v).unwrap();
 
-            let s = s.trim();
+        let s = s.trim();
 
-            let mut result = [0 as $t; $s];
+        let mut result = [0 as $t; $s];
 
-            if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
-                for (i, l) in array.elems.into_iter().enumerate() {
-                    if i >= $s {
-                        panic!("incorrect length, bigger than {}, file: {}", $s, path);
-                    }
+        if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
+            for (i, l) in array.elems.into_iter().enumerate() {
+                if i >= $s {
+                    panic!("incorrect length, bigger than {}, file: {}", $s, path);
+                }
 
-                    let mut neg = false;
+                let mut neg = false;
 
-                    let exp = match l {
-                        $crate::syn::Expr::Lit(exp) => {
-                            exp
-                        }
-                        $crate::syn::Expr::Unary(exp) => {
-                            neg = true;
+                let exp = match l {
+                    $crate::syn::Expr::Lit(exp) => exp,
+                    $crate::syn::Expr::Unary(exp) => {
+                        neg = true;
 
-                            match exp.expr.as_ref() {
-                                $crate::syn::Expr::Lit(exp) => {
-                                    exp.clone()
-                                }
-                                _ => {
-                                    panic!("incorrect element type, index = {}, file: {}", i, path);
-                                }
-                            }
-                        }
-                        _ => {
-                            panic!("incorrect element type, index = {}, file: {}", i, path);
-                        }
-                    };
-
-                    match exp.lit {
-                        $crate::syn::Lit::Float(f) => {
-                            if f.suffix() == $crate::syn::FloatSuffix::F32 {
+                        match exp.expr.as_ref() {
+                            $crate::syn::Expr::Lit(exp) => exp.clone(),
+                            _ => {
                                 panic!("incorrect element type, index = {}, file: {}", i, path);
                             }
+                        }
+                    }
+                    _ => {
+                        panic!("incorrect element type, index = {}, file: {}", i, path);
+                    }
+                };
 
+                match exp.lit {
+                    $crate::syn::Lit::Float(f) => {
+                        if f.suffix() == $crate::syn::FloatSuffix::F32 {
+                            panic!("incorrect element type, index = {}, file: {}", i, path);
+                        }
+
+                        let f = if neg {
+                            -1.0 * f.value()
+                        } else {
+                            f.value()
+                        };
+
+                        result[i] = f as f64;
+                    }
+                    $crate::syn::Lit::Int(n) => {
+                        let f = n.value() as f64;
+
+                        let ts = n.into_token_stream();
+
+                        let s = ts.into_iter().next().unwrap().to_string();
+
+                        if s.ends_with_caseless_ascii("f64") {
                             let f = if neg {
-                                -1.0 * f.value()
+                                -1.0 * f
                             } else {
-                                f.value()
+                                f
                             };
 
                             result[i] = f as f64;
-                        }
-                        $crate::syn::Lit::Int(n) => {
-                            let f = n.value() as f64;
-
-                            let ts = n.into_token_stream();
-
-                            let s = ts.into_iter().next().unwrap().to_string();
-
-                            if s.ends_with_caseless_ascii("f64") {
-                                let f = if neg {
-                                    -1.0 * f
-                                } else {
-                                    f
-                                };
-
-                                result[i] = f as f64;
-                            } else {
-                                panic!("incorrect element type, index = {}, file: {}", i, path);
-                            }
-                        }
-                        _ => {
+                        } else {
                             panic!("incorrect element type, index = {}, file: {}", i, path);
                         }
                     }
+                    _ => {
+                        panic!("incorrect element type, index = {}, file: {}", i, path);
+                    }
                 }
-
-                result
-            } else {
-                panic!("incorrect array, file: {}", path);
             }
+
+            result
+        } else {
+            panic!("incorrect array, file: {}", path);
         }
-    }
+    }};
 }
 
 #[cfg(debug_assertions)]

@@ -108,8 +108,23 @@ fn include_array_lazy_static(bencher: &mut Bencher) {
     });
 }
 
-benchmark_group!(include_str, include_str_no_static, include_str_native_static, include_str_lazy_static);
-benchmark_group!(include_bytes, include_bytes_no_static, include_bytes_native_static, include_bytes_lazy_static);
-benchmark_group!(include_array, include_array_no_static, include_array_native_static, include_array_lazy_static);
+benchmark_group!(
+    include_str,
+    include_str_no_static,
+    include_str_native_static,
+    include_str_lazy_static
+);
+benchmark_group!(
+    include_bytes,
+    include_bytes_no_static,
+    include_bytes_native_static,
+    include_bytes_lazy_static
+);
+benchmark_group!(
+    include_array,
+    include_array_no_static,
+    include_array_native_static,
+    include_array_lazy_static
+);
 
 benchmark_main!(include_str, include_bytes, include_array);

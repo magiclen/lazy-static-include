@@ -1,8 +1,13 @@
+#![allow(clippy::unreadable_literal)]
+
 #[macro_use]
 extern crate lazy_static_include;
 
 #[macro_use]
 extern crate lazy_static;
+
+#[macro_use]
+extern crate assert_approx_eq;
 
 #[test]
 fn include_str() {
@@ -44,32 +49,32 @@ fn include_bytes() {
 
     lazy_static_include_bytes!(pub TEST2, "data/test-2.txt");
 
-    assert_eq!("This is just a test text.".as_bytes(), TEST);
-    assert_eq!(TEST2, "Some text...".as_bytes());
+    assert_eq!(b"This is just a test text.".as_ref(), TEST);
+    assert_eq!(TEST2, b"Some text...".as_ref());
 }
 
 #[test]
 fn include_bytes_vec() {
     lazy_static_include_bytes_vec!(TEST, "data/test.txt");
 
-    assert_eq!("This is just a test text.".as_bytes(), TEST[0]);
+    assert_eq!(b"This is just a test text.", TEST[0]);
 
     lazy_static_include_bytes_vec!(pub TEST2, "data/test-2.txt");
 
-    assert_eq!(TEST2[0], "Some text...".as_bytes());
+    assert_eq!(TEST2[0], b"Some text...");
 }
 
 #[test]
 fn include_bytes_multiple() {
     lazy_static_include_bytes!(TEST, "data/test.txt", "data/test-2.txt");
 
-    assert_eq!("This is just a test text.".as_bytes(), TEST[0]);
-    assert_eq!(TEST[1], "Some text...".as_bytes());
+    assert_eq!(b"This is just a test text.", TEST[0]);
+    assert_eq!(TEST[1], b"Some text...");
 
     lazy_static_include_bytes!(pub TEST2, "data/test-2.txt", "data/test.txt");
 
-    assert_eq!("Some text...".as_bytes(), TEST2[0]);
-    assert_eq!(TEST2[1], "This is just a test text.".as_bytes());
+    assert_eq!(b"Some text...", TEST2[0]);
+    assert_eq!(TEST2[1], b"This is just a test text.");
 }
 
 #[cfg(any(not(debug_assertions), not(feature = "no_std")))]
@@ -149,11 +154,11 @@ fn include_array_i128() {
 fn include_array_f32() {
     lazy_static_include_array!(pub TEST: [f32; 5], "data/f32_array.txt");
 
-    assert_eq!(123f32, TEST[0]);
-    assert_eq!(-456f32, TEST[1]);
-    assert_eq!(789.5f32, TEST[2]);
-    assert_eq!(1000.123f32, TEST[3]);
-    assert_eq!(5000f32, TEST[4]);
+    assert_approx_eq!(123f32, TEST[0]);
+    assert_approx_eq!(-456f32, TEST[1]);
+    assert_approx_eq!(789.5f32, TEST[2]);
+    assert_approx_eq!(1000.123f32, TEST[3]);
+    assert_approx_eq!(5000f32, TEST[4]);
 }
 
 #[cfg(any(not(debug_assertions), not(feature = "no_std")))]
@@ -161,11 +166,11 @@ fn include_array_f32() {
 fn include_array_f64() {
     lazy_static_include_array!(TEST: [f64; 5], "data/f64_array.txt");
 
-    assert_eq!(123f64, TEST[0]);
-    assert_eq!(-456f64, TEST[1]);
-    assert_eq!(789.5f64, TEST[2]);
-    assert_eq!(1000.123f64, TEST[3]);
-    assert_eq!(5000.456f64, TEST[4]);
+    assert_approx_eq!(123f64, TEST[0]);
+    assert_approx_eq!(-456f64, TEST[1]);
+    assert_approx_eq!(789.5f64, TEST[2]);
+    assert_approx_eq!(1000.123f64, TEST[3]);
+    assert_approx_eq!(5000.456f64, TEST[4]);
 }
 
 #[cfg(any(not(debug_assertions), not(feature = "no_std")))]
@@ -281,7 +286,11 @@ fn include_array_string_vec() {
 #[cfg(any(not(debug_assertions), not(feature = "no_std")))]
 #[test]
 fn include_array_string_multiple() {
-    lazy_static_include_array!(TEST: [&'static str; 3], "data/string_array.txt", "data/string_array-2.txt");
+    lazy_static_include_array!(
+        TEST: [&'static str; 3],
+        "data/string_array.txt",
+        "data/string_array-2.txt"
+    );
 
     assert_eq!("Hi", TEST[0][0]);
     assert_eq!("Hello", TEST[0][1]);

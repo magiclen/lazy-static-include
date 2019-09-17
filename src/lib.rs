@@ -142,7 +142,7 @@ pub extern crate syn;
 #[doc(hidden)]
 pub extern crate starts_ends_with_caseless;
 
+mod macro_include_array;
+mod macro_include_bytes;
 mod macro_include_counter;
 mod macro_include_str;
-mod macro_include_bytes;
-mod macro_include_array;

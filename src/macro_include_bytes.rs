@@ -1,34 +1,22 @@
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_bytes_impl {
-    ( $name:ident ) => {
+    ($name:ident) => {
         impl<'a> ::std::cmp::PartialEq<&'a [u8]> for $name {
-            fn eq(&self, other: &&'a [u8]) -> bool{
+            fn eq(&self, other: &&'a [u8]) -> bool {
                 (&*$name).eq(other)
-            }
-
-            fn ne(&self, other: &&'a [u8]) -> bool {
-                (&*$name).ne(other)
             }
         }
 
         impl ::std::cmp::PartialEq for $name {
-            fn eq(&self, other: &$name) -> bool{
+            fn eq(&self, other: &$name) -> bool {
                 true
-            }
-
-            fn ne(&self, other: &$name) -> bool {
-                false
             }
         }
 
         impl<'a> ::std::cmp::PartialEq<$name> for &'a [u8] {
-            fn eq(&self, other: &$name) -> bool{
+            fn eq(&self, other: &$name) -> bool {
                 self.eq(&*$name)
-            }
-
-            fn ne(&self, other: &$name) -> bool {
-                self.ne(&*$name)
             }
         }
 
@@ -43,19 +31,19 @@ macro_rules! lazy_static_include_bytes_impl {
                 (*$name).as_ref()
             }
         }
-    }
+    };
 }
 
 #[doc(hidden)]
 #[macro_export]
 macro_rules! lazy_static_include_bytes_multiple_impl {
-    ( $name:ident ) => {
+    ($name:ident) => {
         impl ::std::fmt::Debug for $name {
             fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
                 ::std::fmt::Debug::fmt(&*$name, f)
             }
         }
-    }
+    };
 }
 
 #[cfg(not(debug_assertions))]
