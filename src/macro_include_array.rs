@@ -490,82 +490,82 @@ macro_rules! lazy_static_include_array_inner_f {
 macro_rules! lazy_static_include_array_inner {
     ( $name:ident: [isize; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_i!($name: [isize; $s], $path)
+            $crate::lazy_static_include_array_inner_i!($name: [isize; $s], $path)
         }
     };
     ( $name:ident: [i8; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_i!($name: [i8; $s], $path)
+            $crate::lazy_static_include_array_inner_i!($name: [i8; $s], $path)
         }
     };
     ( $name:ident: [i16; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_i!($name: [i16; $s], $path)
+            $crate::lazy_static_include_array_inner_i!($name: [i16; $s], $path)
         }
     };
     ( $name:ident: [i32; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_i!($name: [i32; $s], $path)
+            $crate::lazy_static_include_array_inner_i!($name: [i32; $s], $path)
         }
     };
     ( $name:ident: [i64; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_i!($name: [i64; $s], $path)
+            $crate::lazy_static_include_array_inner_i!($name: [i64; $s], $path)
         }
     };
     ( $name:ident: [i128; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_i!($name: [i128; $s], $path)
+            $crate::lazy_static_include_array_inner_i!($name: [i128; $s], $path)
         }
     };
     ( $name:ident: [f32; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_f!($name: [f32; $s], $path)
+            $crate::lazy_static_include_array_inner_f!($name: [f32; $s], $path)
         }
     };
     ( $name:ident: [f64; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_f!($name: [f64; $s], $path)
+            $crate::lazy_static_include_array_inner_f!($name: [f64; $s], $path)
         }
     };
     ( $name:ident: [usize; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_u!($name: [usize; $s], $path)
+            $crate::lazy_static_include_array_inner_u!($name: [usize; $s], $path)
         }
     };
     ( $name:ident: [u8; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_u!($name: [u8; $s], $path)
+            $crate::lazy_static_include_array_inner_u!($name: [u8; $s], $path)
         }
     };
     ( $name:ident: [u16; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_u!($name: [u16; $s], $path)
+            $crate::lazy_static_include_array_inner_u!($name: [u16; $s], $path)
         }
     };
     ( $name:ident: [u32; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_u!($name: [u32; $s], $path)
+            $crate::lazy_static_include_array_inner_u!($name: [u32; $s], $path)
         }
     };
     ( $name:ident: [u64; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_u!($name: [u64; $s], $path)
+            $crate::lazy_static_include_array_inner_u!($name: [u64; $s], $path)
         }
     };
     ( $name:ident: [u128; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_u!($name: [u128; $s], $path)
+            $crate::lazy_static_include_array_inner_u!($name: [u128; $s], $path)
         }
     };
     ( $name:ident: [char; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_c!($name: [char; $s], $path)
+            $crate::lazy_static_include_array_inner_c!($name: [char; $s], $path)
         }
     };
     ( $name:ident: [bool; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_b!($name: [bool; $s], $path)
+            $crate::lazy_static_include_array_inner_b!($name: [bool; $s], $path)
         }
     };
     ( $name:ident: [&'static str; $s:expr], Vec, $($paths:expr), + ) => {
@@ -581,7 +581,7 @@ macro_rules! lazy_static_include_array_inner {
     };
     ( $name:ident: [&'static str; $s:expr], $path:expr ) => {
         {
-            lazy_static_include_array_inner_s!($name: [&'static str; $s], $path)
+            $crate::lazy_static_include_array_inner_s!($name: [&'static str; $s], $path)
         }
     };
     ( $name:ident: [$t:ident; $s:expr], Vec, $($paths:expr), + ) => {
@@ -625,98 +625,116 @@ macro_rules! lazy_static_include_array_inner {
 
 #[macro_export]
 macro_rules! lazy_static_include_array {
-    ( $name:ident: [&'static str; $s:expr], $path:expr $(,)* ) => {
-        lazy_static! {
-            static ref $name: [&'static str; $s] = lazy_static_include_array_inner!($name: [&'static str; $s], $path);
+    ( $(#[$attr: meta])* $name:ident: [&'static str; $s:expr], $path:expr $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            static ref $name: [&'static str; $s] = $crate::lazy_static_include_array_inner!($name: [&'static str; $s], $path);
         }
     };
-    ( $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], $path $(, $paths)+);
+    ( $(#[$attr: meta])* $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            static ref $name: Vec<[&'static str; $s]> = $crate::lazy_static_include_array_inner!($name: [&'static str; $s], $path $(, $paths)+);
         }
     };
-    ( pub $name:ident: [&'static str; $s:expr], $path:expr $(,)* ) => {
-        lazy_static! {
-            pub static ref $name: [&'static str; $s] = lazy_static_include_array_inner!($name: [&'static str; $s], $path);
+    ( $(#[$attr: meta])* pub $name:ident: [&'static str; $s:expr], $path:expr $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub static ref $name: [&'static str; $s] = $crate::lazy_static_include_array_inner!($name: [&'static str; $s], $path);
         }
     };
-    ( pub($($vis:tt)*) $name:ident: [&'static str; $s:expr], $path:expr $(,)* ) => {
-        lazy_static! {
-            pub($($vis)*) static ref $name: [&'static str; $s] = lazy_static_include_array_inner!($name: [&'static str; $s], $path);
+    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident: [&'static str; $s:expr], $path:expr $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub($($vis)*) static ref $name: [&'static str; $s] = $crate::lazy_static_include_array_inner!($name: [&'static str; $s], $path);
         }
     };
-    ( pub $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            pub static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], $path $(, $paths)+);
+    ( $(#[$attr: meta])* pub $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub static ref $name: Vec<[&'static str; $s]> = $crate::lazy_static_include_array_inner!($name: [&'static str; $s], $path $(, $paths)+);
         }
     };
-    ( pub($($vis:tt)*) $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            pub($($vis)*) static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], $path $(, $paths)+);
+    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident: [&'static str; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub($($vis)*) static ref $name: Vec<[&'static str; $s]> = $crate::lazy_static_include_array_inner!($name: [&'static str; $s], $path $(, $paths)+);
         }
     };
-    ( $name:ident: [$t:ident; $s:expr], $path:expr $(,)* ) => {
-        lazy_static! {
-            static ref $name: [$t; $s] = lazy_static_include_array_inner!($name: [$t; $s], $path);
+    ( $(#[$attr: meta])* $name:ident: [$t:ident; $s:expr], $path:expr $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            static ref $name: [$t; $s] = $crate::lazy_static_include_array_inner!($name: [$t; $s], $path);
         }
     };
-    ( $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], $path $(, $paths)+);
+    ( $(#[$attr: meta])* $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            static ref $name: Vec<[$t; $s]> = $crate::lazy_static_include_array_inner!($name: [$t; $s], $path $(, $paths)+);
         }
     };
-    ( pub $name:ident: [$t:ident; $s:expr], $path:expr $(,)* ) => {
-        lazy_static! {
-            pub static ref $name: [$t; $s] = lazy_static_include_array_inner!($name: [$t; $s], $path);
+    ( $(#[$attr: meta])* pub $name:ident: [$t:ident; $s:expr], $path:expr $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub static ref $name: [$t; $s] = $crate::lazy_static_include_array_inner!($name: [$t; $s], $path);
         }
     };
-    ( pub($($vis:tt)*) $name:ident: [$t:ident; $s:expr], $path:expr $(,)* ) => {
-        lazy_static! {
-            pub($($vis)*) static ref $name: [$t; $s] = lazy_static_include_array_inner!($name: [$t; $s], $path);
+    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident: [$t:ident; $s:expr], $path:expr $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub($($vis)*) static ref $name: [$t; $s] = $crate::lazy_static_include_array_inner!($name: [$t; $s], $path);
         }
     };
-    ( pub $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            pub static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], $path $(, $paths)+);
+    ( $(#[$attr: meta])* pub $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub static ref $name: Vec<[$t; $s]> = $crate::lazy_static_include_array_inner!($name: [$t; $s], $path $(, $paths)+);
         }
     };
-    ( pub($($vis:tt)*) $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            pub($($vis)*) static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], $path $(, $paths)+);
+    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident: [$t:ident; $s:expr], $path:expr, $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub($($vis)*) static ref $name: Vec<[$t; $s]> = $crate::lazy_static_include_array_inner!($name: [$t; $s], $path $(, $paths)+);
         }
     };
 }
 
 #[macro_export]
 macro_rules! lazy_static_include_array_vec {
-    ( $name:ident: [&'static str; $s:expr] $(, $paths:expr)+ $(,)* ) => {
-        lazy_static! {
-            static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], Vec $(, $paths)+);
+    ( $(#[$attr: meta])* $name:ident: [&'static str; $s:expr] $(, $paths:expr)+ $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            static ref $name: Vec<[&'static str; $s]> = $crate::lazy_static_include_array_inner!($name: [&'static str; $s], Vec $(, $paths)+);
         }
     };
-    ( pub $name:ident: [&'static str; $s:expr], $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            pub static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], Vec $(, $paths)+);
+    ( $(#[$attr: meta])* pub $name:ident: [&'static str; $s:expr], $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub static ref $name: Vec<[&'static str; $s]> = $crate::lazy_static_include_array_inner!($name: [&'static str; $s], Vec $(, $paths)+);
         }
     };
-    ( pub($($vis:tt)*) $name:ident: [&'static str; $s:expr], $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            pub($($vis)*) static ref $name: Vec<[&'static str; $s]> = lazy_static_include_array_inner!($name: [&'static str; $s], Vec $(, $paths)+);
+    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident: [&'static str; $s:expr], $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub($($vis)*) static ref $name: Vec<[&'static str; $s]> = $crate::lazy_static_include_array_inner!($name: [&'static str; $s], Vec $(, $paths)+);
         }
     };
-    ( $name:ident: [$t:ident; $s:expr], $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], Vec $(, $paths)+);
+    ( $(#[$attr: meta])* $name:ident: [$t:ident; $s:expr], $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            static ref $name: Vec<[$t; $s]> = $crate::lazy_static_include_array_inner!($name: [$t; $s], Vec $(, $paths)+);
         }
     };
-    ( pub $name:ident: [$t:ident; $s:expr], $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            pub static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], Vec $(, $paths)+);
+    ( $(#[$attr: meta])* pub $name:ident: [$t:ident; $s:expr], $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub static ref $name: Vec<[$t; $s]> = $crate::lazy_static_include_array_inner!($name: [$t; $s], Vec $(, $paths)+);
         }
     };
-    ( pub($($vis:tt)*) $name:ident: [$t:ident; $s:expr], $($paths:expr), + $(,)* ) => {
-        lazy_static! {
-            pub($($vis)*) static ref $name: Vec<[$t; $s]> = lazy_static_include_array_inner!($name: [$t; $s], Vec $(, $paths)+);
+    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident: [$t:ident; $s:expr], $($paths:expr), + $(,)* ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub($($vis)*) static ref $name: Vec<[$t; $s]> = $crate::lazy_static_include_array_inner!($name: [$t; $s], Vec $(, $paths)+);
         }
     };
 }

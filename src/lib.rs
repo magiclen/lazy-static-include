@@ -136,6 +136,8 @@ cargo bench
 ```
 */
 
+extern crate lazy_static;
+
 #[doc(hidden)]
 pub extern crate syn;
 
@@ -146,3 +148,5 @@ mod macro_include_array;
 mod macro_include_bytes;
 mod macro_include_counter;
 mod macro_include_str;
+
+pub use lazy_static::lazy_static;

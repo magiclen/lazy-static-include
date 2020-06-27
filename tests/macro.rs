@@ -4,9 +4,6 @@
 extern crate lazy_static_include;
 
 #[macro_use]
-extern crate lazy_static;
-
-#[macro_use]
 extern crate assert_approx_eq;
 
 #[test]
