@@ -20,7 +20,7 @@ fn include_str() {
     let _data: &'static str = TEST.as_ref();
 
     assert_eq!("This is just a test text.", TEST);
-    assert_eq!(TEST2, "Some text...");
+    assert_eq!("Some text...", TEST2);
 }
 
 #[test]
@@ -38,8 +38,8 @@ fn include_bytes() {
 
     let _data: &'static [u8] = TEST.as_ref();
 
-    assert_eq!(b"This is just a test text.".as_ref(), TEST);
-    assert_eq!(TEST2, b"Some text...".as_ref());
+    assert_eq!("This is just a test text.".as_bytes(), TEST);
+    assert_eq!("Some text...".as_bytes(), TEST2);
 }
 
 #[test]

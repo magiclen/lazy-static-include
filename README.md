@@ -30,7 +30,7 @@ lazy_static_include_str! {
 }
 
 assert_eq!("This is just a test text.", TEST);
-assert_eq!(TEST2, "Some text...");
+assert_eq!("Some text...", TEST2);
 ```
 
 ```rust
@@ -43,8 +43,8 @@ lazy_static_include_bytes! {
     pub TEST2 => "data/test-2.txt",
 }
 
-assert_eq!(b"This is just a test text.".as_ref(), TEST);
-assert_eq!(TEST2, b"Some text...".as_ref());
+assert_eq!("This is just a test text.".as_bytes(), TEST);
+assert_eq!("Some text...".as_bytes(), TEST2);
 ```
 
 You should notice that the value created from `lazy_static_include_bytes` and `lazy_static_include_str` macros isn't equal to `&'static [u8]` or `&'static str` when you are not using the **release** profile. If you want to get an exact `&'static [u8]` or `&'static str` reference, you can **dereference** the value or just use the `as_ref` method.
