@@ -19,10 +19,13 @@ The paths used for `lazy_static_include_bytes` and `lazy_static_include_str` are
 
 ```rust
 #[macro_use] extern crate lazy_static_include;
-#[macro_use] extern crate lazy_static;
 
-lazy_static_include_str!(TEST, "data/test.txt");
-lazy_static_include_str!(pub TEST2, "data/test-2.txt");
+lazy_static_include_str! {
+    /// doc
+    TEST => "data/test.txt",
+    /// doc
+    pub TEST2 => "data/test-2.txt",
+}
 
 assert_eq!("This is just a test text.", TEST);
 assert_eq!(TEST2, "Some text...");
@@ -30,36 +33,35 @@ assert_eq!(TEST2, "Some text...");
 
 ```rust
 #[macro_use] extern crate lazy_static_include;
-#[macro_use] extern crate lazy_static;
 
-lazy_static_include_bytes!(TEST, "data/test.txt", "data/test-2.txt");
+lazy_static_include_bytes! {
+    /// doc
+    TEST => "data/test.txt",
+    /// doc
+    pub TEST2 => "data/test-2.txt",
+}
 
-assert_eq!("This is just a test text.".as_bytes(), TEST[0]);
-assert_eq!(TEST[1], "Some text...".as_bytes());
+assert_eq!(b"This is just a test text.".as_ref(), TEST);
+assert_eq!(TEST2, b"Some text...".as_ref());
 ```
 
-You should notice that the struct created from `lazy_static_include_bytes` and `lazy_static_include_str` macros isn't equal to `&'static [u8]` or `&'static str`.
-If you want to get an exact `&'static [u8]` or `&'static str` reference, you need to **dereference the struct**.
+You should notice that the value created from `lazy_static_include_bytes` and `lazy_static_include_str` macros isn't equal to `&'static [u8]` or `&'static str` when you are not using the **release** profile. If you want to get an exact `&'static [u8]` or `&'static str` reference, you can **dereference** the value or just use the `as_ref` method.
 
-```rust
+```rust,ignore
 #[macro_use] extern crate lazy_static_include;
-#[macro_use] extern crate lazy_static;
 
-lazy_static_include_bytes!(TEST, "data/test.txt");
+lazy_static_include_bytes! {
+    /// doc
+    TEST => "data/test.txt",
+}
 
+#[cfg(debug_assertions)]
 let data: &'static [u8] = *TEST;
-```
 
-If you include str and bytes from multiple files, after dereferencing the struct, you will get a `Vec<&'static [u8]>` or a `Vec<&'static str>`.
-In order to not move out of borrowed content, use **&*** to get the reference of that `Vec`.
+#[cfg(not(debug_assertions))]
+let data: &'static [u8] = TEST;
 
-```rust
-#[macro_use] extern crate lazy_static_include;
-#[macro_use] extern crate lazy_static;
-
-lazy_static_include_str!(TEST, "data/test.txt", "data/test-2.txt");
-
-let v: &Vec<&'static str> = &*TEST;
+let data: &'static [u8] = TEST.as_ref();
 ```
 
 ## Include Array
@@ -70,64 +72,46 @@ The array is fixed sized and can be one of these following types: `bool`, `char`
 Also, the `lazy_static_include_array` macro includes data from files into the compiled executable binary file **only** when you are using the **release** profile.
 Be careful when you distribute your program.
 
-```rust,ignore
-#[macro_use] extern crate lazy_static_include;
-#[macro_use] extern crate lazy_static;
+The paths used for `lazy_static_include_array` are relative to **CARGO_MANIFEST_DIR**.
 
-lazy_static_include_array!(TEST: [u64; 5], "data/u64_array.txt");
+```rust
+#[macro_use] extern crate lazy_static_include;
+
+lazy_static_include_array! {
+    /// doc
+    TEST: [u64; 5] => "data/u64_array.txt",
+    /// doc
+    pub TEST2: [&'static str; 3] => "data/string_array.txt"
+}
+
 assert_eq!(123, TEST[0]);
 assert_eq!(456, TEST[1]);
 assert_eq!(789, TEST[2]);
 assert_eq!(1000, TEST[3]);
 assert_eq!(500000000000u64, TEST[4]);
-```
 
-```rust,ignore
-#[macro_use] extern crate lazy_static_include;
-#[macro_use] extern crate lazy_static;
-
-lazy_static_include_array!(TEST: [i32; 5], "data/i32_array.txt", "data/i32_array-2.txt");
-assert_eq!(123, TEST[0][0]);
-assert_eq!(-456, TEST[0][1]);
-assert_eq!(789, TEST[0][2]);
-assert_eq!(1000, TEST[0][3]);
-assert_eq!(5000, TEST[0][4]);
-
-assert_eq!(-1, TEST[1][0]);
-assert_eq!(-2, TEST[1][1]);
-assert_eq!(-3, TEST[1][2]);
-assert_eq!(-4, TEST[1][3]);
-assert_eq!(-5, TEST[1][4]);
-```
-
-```rust,ignore
-#[macro_use] extern crate lazy_static_include;
-#[macro_use] extern crate lazy_static;
-
-lazy_static_include_array!(pub TEST: [&'static str; 3], "data/string_array.txt");
-
-assert_eq!("Hi", TEST[0]);
-assert_eq!("Hello", TEST[1]);
-assert_eq!("哈囉", TEST[2]);
+assert_eq!("Hi", TEST2[0]);
+assert_eq!("Hello", TEST2[1]);
+assert_eq!("哈囉", TEST2[2]);
 ```
 
 ## Benchmark
 
-Using static mechanisms makes your program faster. See my benchmark result below (Intel i7-6700HQ, ran on 2019/07/16):
+Using static mechanisms makes your program faster. See my benchmark result below (AMD Ryzen 9 3900X 12-Core Processor 12C/24T 3.90GHz, ran on 2020/07/02):
 
 ```text
-test include_array_lazy_static   ... bench:          43 ns/iter (+/- 3)
-test include_array_native_static ... bench:          46 ns/iter (+/- 4)
-test include_array_no_static     ... bench:      29,714 ns/iter (+/- 1,156)
-test include_bytes_lazy_static   ... bench:         382 ns/iter (+/- 63)
-test include_bytes_native_static ... bench:         380 ns/iter (+/- 30)
-test include_bytes_no_static     ... bench:       9,076 ns/iter (+/- 1,224)
-test include_str_lazy_static     ... bench:         932 ns/iter (+/- 103)
-test include_str_native_static   ... bench:         937 ns/iter (+/- 25)
-test include_str_no_static       ... bench:      10,135 ns/iter (+/- 1,634)
+test include_array_lazy_static   ... bench:          45 ns/iter (+/- 3)
+test include_array_native_static ... bench:          45 ns/iter (+/- 3)
+test include_array_no_static     ... bench:      20,959 ns/iter (+/- 295)
+test include_bytes_lazy_static   ... bench:         754 ns/iter (+/- 7)
+test include_bytes_native_static ... bench:         755 ns/iter (+/- 11)
+test include_bytes_no_static     ... bench:       4,560 ns/iter (+/- 179)
+test include_str_lazy_static     ... bench:         753 ns/iter (+/- 10)
+test include_str_native_static   ... bench:         755 ns/iter (+/- 7)
+test include_str_no_static       ... bench:       4,830 ns/iter (+/- 198)
 ```
 
-When using the **release** profile, the performance of `lazy_static_include_*` is very close to `include_*`. That means you don't need to worry about the overhead, but just enjoy the faster compilation time.
+When using the **release** profile, the performance of `lazy_static_include_*` is very close to `include_*` (in fast, they are the same). That means you don't need to worry about the overhead, but just enjoy the faster compilation time.
 
 You can run the benchmark program by executing,
 
@@ -138,15 +122,17 @@ cargo bench
 
 extern crate lazy_static;
 
+extern crate slash_formatter;
+
 #[doc(hidden)]
 pub extern crate syn;
 
-#[doc(hidden)]
-pub extern crate starts_ends_with_caseless;
-
 mod macro_include_array;
 mod macro_include_bytes;
-mod macro_include_counter;
 mod macro_include_str;
 
+#[doc(hidden)]
 pub use lazy_static::lazy_static;
+
+#[doc(hidden)]
+pub use slash_formatter::concat_with_file_separator;

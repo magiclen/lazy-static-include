@@ -1,326 +1,125 @@
-#[doc(hidden)]
+#[cfg(debug_assertions)]
+/// Includes a utf8-encoded file as a string slice (`&'static str`).
+///
+/// The file is located relative to the directory containing the manifest of your package.
 #[macro_export]
-macro_rules! lazy_static_include_str_impl {
-    ($name:ident) => {
+macro_rules! lazy_static_include_str {
+    ( @impl $name:ident ) => {
         impl ::std::cmp::PartialEq<str> for $name {
+            #[inline]
             fn eq(&self, other: &str) -> bool {
                 (*$name).eq(other)
             }
         }
 
         impl<'a> ::std::cmp::PartialEq<&'a str> for $name {
+            #[inline]
             fn eq(&self, other: &&'a str) -> bool {
                 (&*$name).eq(other)
             }
         }
 
         impl ::std::cmp::PartialEq for $name {
+            #[inline]
             fn eq(&self, other: &$name) -> bool {
                 true
             }
         }
 
         impl<'a> ::std::cmp::PartialEq<$name> for &'a str {
+            #[inline]
             fn eq(&self, other: &$name) -> bool {
                 self.eq(&*$name)
             }
         }
 
         impl ::std::fmt::Debug for $name {
+            #[inline]
             fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
                 ::std::fmt::Debug::fmt(*$name, f)
             }
         }
 
         impl ::std::fmt::Display for $name {
+            #[inline]
             fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
                 ::std::fmt::Display::fmt(*$name, f)
             }
         }
 
-        impl<T: ?Sized> AsRef<T> for $name
+        impl<T> ::std::convert::AsRef<T> for $name
         where
+            T: ?Sized,
             str: ::std::convert::AsRef<T>,
         {
+            #[inline]
             fn as_ref(&self) -> &T {
                 (*$name).as_ref()
             }
         }
     };
-}
-
-#[doc(hidden)]
-#[macro_export]
-macro_rules! lazy_static_include_str_multiple_impl {
-    ($name:ident) => {
-        impl ::std::fmt::Debug for $name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                ::std::fmt::Debug::fmt(&*$name, f)
-            }
-        }
-    };
-}
-
-#[cfg(not(debug_assertions))]
-#[doc(hidden)]
-#[macro_export]
-macro_rules! lazy_static_include_str_inner {
-    ( $name:ident, $path:expr ) => {
+    ( @inner $name:ident, $path:expr ) => {
         {
-            include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $path))
-        }
-    };
-    ( $name:ident, Vec, $($paths:expr), + ) => {
-        {
-            let mut v: Vec<&'static str> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
+            use ::std::fs;
+            use ::std::mem::{forget, transmute};
 
-            $(
-                v.push(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths)));
-            )+
+            let path = $crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path);
 
-            v
-        }
-    };
-    ( $name:ident, $path:expr, $($paths:expr), + ) => {
-        {
-            let mut v: Vec<&'static str> = Vec::with_capacity(lazy_static_include_counter!($path $(, $paths)+));
-
-            v.push(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $path)));
-
-            $(
-                v.push(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths)));
-            )+
-
-            v
-        }
-    };
-}
-
-#[cfg(debug_assertions)]
-#[doc(hidden)]
-#[macro_export]
-macro_rules! lazy_static_include_str_inner {
-    ( $name:ident, $path:expr ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use ::std::mem;
-
-            let v = {
-                let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
-
-                let mut f = File::open(&path).unwrap();
-
-                let mut v: Vec<u8> = Vec::new();
-
-                f.read_to_end(&mut v).unwrap();
-
-                v
-            };
-
-            let s = String::from_utf8(v).unwrap();
+            let text = fs::read_to_string(path).unwrap();
 
             unsafe {
-                let ret = mem::transmute(s.as_str());
-                mem::forget(s);
+                let ret = transmute(text.as_str());
+                forget(text);
                 ret
             }
         }
     };
-    ( $name:ident, Vec, $($paths:expr), + ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use ::std::mem;
-
-            let mut v: Vec<&'static str> = Vec::with_capacity(lazy_static_include_counter!(Vec $(, $paths)+));
-
-            $(
-                let vv = {
-                    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths);
-
-                    let mut f = File::open(&path).unwrap();
-
-                    let mut v: Vec<u8> = Vec::new();
-
-                    f.read_to_end(&mut v).unwrap();
-
-                    v
-                };
-
-                let s = String::from_utf8(vv).unwrap();
-
-                v.push(
-                    unsafe {
-                        let ret = mem::transmute(s.as_str());
-                        mem::forget(s);
-                        ret
-                    }
-                );
-            )+
-
-            v
+    ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            static ref $name: &'static str = $crate::lazy_static_include_str!(@inner $name, $path);
         }
+
+        $crate::lazy_static_include_str!(@impl $name);
     };
-    ( $name:ident, $path:expr, $($paths:expr), + ) => {
-        {
-            use ::std::fs::File;
-            use ::std::io::Read;
-            use ::std::mem;
-
-            let mut v: Vec<&'static str> = Vec::with_capacity(lazy_static_include_counter!($path $(, $paths)+));
-
-            let vv = {
-                let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $path);
-
-                let mut f = File::open(&path).unwrap();
-
-                let mut v: Vec<u8> = Vec::new();
-
-                f.read_to_end(&mut v).unwrap();
-
-                v
-            };
-
-            let s = String::from_utf8(vv).unwrap();
-
-            v.push(
-                unsafe {
-                    let ret = mem::transmute(s.as_str());
-                    mem::forget(s);
-                    ret
-                }
-            );
-
-            $(
-                let vv = {
-                    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", $paths);
-
-                    let mut f = File::open(&path).unwrap();
-
-                    let mut v: Vec<u8> = Vec::new();
-
-                    f.read_to_end(&mut v).unwrap();
-
-                    v
-                };
-
-                let s = String::from_utf8(vv).unwrap();
-
-                v.push(
-                    unsafe {
-                        let ret = mem::transmute(s.as_str());
-                        mem::forget(s);
-                        ret
-                    }
-                );
-            )+
-
-            v
+    ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub$(($($v)+))? static ref $name: &'static str = $crate::lazy_static_include_str!(@inner $name, $path);
         }
+
+        $crate::lazy_static_include_str!(@impl $name);
+    };
+    ( $($(#[$attr: meta])* $v:vis $name:ident => $path:expr),* $(,)* ) => {
+        $(
+            $crate::lazy_static_include_str! {
+                @unit
+                $(#[$attr])*
+                ($v) $name => $path
+            }
+        )*
     };
 }
 
+#[cfg(not(debug_assertions))]
+/// Includes a utf8-encoded file as a string slice (`&'static str`).
+///
+/// The file is located relative to the directory containing the manifest of your package.
 #[macro_export]
 macro_rules! lazy_static_include_str {
-    ( $(#[$attr: meta])* $name:ident, $path:expr $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            static ref $name: &'static str = $crate::lazy_static_include_str_inner!($name, $path);
-        }
-
-        $crate::lazy_static_include_str_impl!($name);
+    ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
+        static $name: &'static str = include_str!($crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
     };
-    ( $(#[$attr: meta])* $name:ident, Vec, $($paths:expr), + $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            static ref $name: Vec<&'static str> = $crate::lazy_static_include_str_inner!($name, Vec $(, $paths)+);
-        }
-
-        $crate::lazy_static_include_str_multiple_impl!($name);
+    ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
+        pub$(($($v)+))? static $name: &'static str = include_str!($crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
     };
-    ( $(#[$attr: meta])* $name:ident, $path:expr, $($paths:expr), + $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            static ref $name: Vec<&'static str> = $crate::lazy_static_include_str_inner!($name, $path $(, $paths)+);
-        }
-
-        $crate::lazy_static_include_str_multiple_impl!($name);
-    };
-    ( $(#[$attr: meta])* pub $name:ident, $path:expr $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            pub static ref $name: &'static str = $crate::lazy_static_include_str_inner!($name, $path);
-        }
-
-        $crate::lazy_static_include_str_impl!($name);
-    };
-    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident, $path:expr $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            pub($($vis)*) static ref $name: &'static str = $crate::lazy_static_include_str_inner!($name, $path);
-        }
-
-        $crate::lazy_static_include_str_impl!($name);
-    };
-    ( $(#[$attr: meta])* pub $name:ident, Vec, $($paths:expr), + $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            pub static ref $name: Vec<&'static str> = $crate::lazy_static_include_str_inner!($name, Vec $(, $paths)+);
-        }
-
-        $crate::lazy_static_include_str_multiple_impl!($name);
-    };
-    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident, Vec, $($paths:expr), + $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            pub($($vis)*) static ref $name: Vec<&'static str> = $crate::lazy_static_include_str_inner!($name, Vec $(, $paths)+);
-        }
-
-        $crate::lazy_static_include_str_multiple_impl!($name);
-    };
-    ( $(#[$attr: meta])* pub $name:ident, $path:expr, $($paths:expr), + $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            pub static ref $name: Vec<&'static str> = $crate::lazy_static_include_str_inner!($name, $path $(, $paths)+);
-        }
-
-        $crate::lazy_static_include_str_multiple_impl!($name);
-    };
-    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident, $path:expr, $($paths:expr), + $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            pub($($vis)*) static ref $name: Vec<&'static str> = $crate::lazy_static_include_str_inner!($name, $path $(, $paths)+);
-        }
-
-        $crate::lazy_static_include_str_multiple_impl!($name);
-    };
-}
-
-#[macro_export]
-macro_rules! lazy_static_include_str_vec {
-    ( $(#[$attr: meta])* $name:ident, $($paths:expr), + $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            static ref $name: Vec<&'static str> = $crate::lazy_static_include_str_inner!($name, Vec $(, $paths)+);
-        }
-
-        $crate::lazy_static_include_str_multiple_impl!($name);
-    };
-    ( $(#[$attr: meta])* pub $name:ident, $($paths:expr), + $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            pub static ref $name: Vec<&'static str> = $crate::lazy_static_include_str_inner!($name, Vec $(, $paths)+);
-        }
-
-        $crate::lazy_static_include_str_multiple_impl!($name);
-    };
-    ( $(#[$attr: meta])* pub($($vis:tt)*) $name:ident, $($paths:expr), + $(,)* ) => {
-        $crate::lazy_static! {
-            $(#[$attr])*
-            pub($($vis)*) static ref $name: Vec<&'static str> = $crate::lazy_static_include_str_inner!($name, Vec $(, $paths)+);
-        }
-
-        $crate::lazy_static_include_str_multiple_impl!($name);
+    ( $($(#[$attr: meta])* $v:vis $name:ident => $path:expr),* $(,)* ) => {
+        $(
+            $crate::lazy_static_include_str! {
+                @unit
+                $(#[$attr])*
+                ($v) $name => $path
+            }
+        )*
     };
 }

@@ -4,18 +4,29 @@ extern crate bencher;
 #[macro_use]
 extern crate lazy_static_include;
 
+#[macro_use]
+extern crate slash_formatter;
+
 extern crate serde_json;
 
 use std::fs::File;
 use std::io::Read;
+use std::str::from_utf8_unchecked;
 
 use bencher::Bencher;
 
-fn include_str_no_static(bencher: &mut Bencher) {
-    let path = concat!(concat!(env!("CARGO_MANIFEST_DIR"), "/", "data/benchmark.txt"));
+macro_rules! benchmark_text_path {
+    () => {
+        concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), "data", "benchmark.txt")
+    };
+    (relative) => {
+        concat_with_file_separator!("data", "benchmark.txt")
+    };
+}
 
+fn include_str_no_static(bencher: &mut Bencher) {
     bencher.iter(|| {
-        let mut f = File::open(&path).unwrap();
+        let mut f = File::open(benchmark_text_path!()).unwrap();
 
         let mut v = Vec::new();
 
@@ -23,58 +34,62 @@ fn include_str_no_static(bencher: &mut Bencher) {
 
         let s = String::from_utf8(v).unwrap();
 
-        assert!(s.contains("figarofigaro"));
+        s.contains("figarofigaro")
     });
 }
 
 fn include_str_native_static(bencher: &mut Bencher) {
-    let text = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", "data/benchmark.txt"));
+    let text = include_str!(benchmark_text_path!());
 
-    bencher.iter(|| {
-        assert!(text.contains("figarofigaro"));
-    });
+    bencher.iter(|| text.contains("figarofigaro"));
 }
 
 fn include_str_lazy_static(bencher: &mut Bencher) {
-    lazy_static_include_str!(TEXT, "data/benchmark.txt");
+    lazy_static_include_str! {
+        pub TEXT => benchmark_text_path!(relative)
+    }
 
-    bencher.iter(|| {
-        assert!((*TEXT).contains("figarofigaro"));
-    });
+    bencher.iter(|| TEXT.contains("figarofigaro"));
 }
 
 fn include_bytes_no_static(bencher: &mut Bencher) {
-    let path = concat!(concat!(env!("CARGO_MANIFEST_DIR"), "/", "data/benchmark.txt"));
-
     bencher.iter(|| {
-        let mut f = File::open(&path).unwrap();
+        let mut f = File::open(benchmark_text_path!()).unwrap();
 
         let mut v = Vec::new();
 
         f.read_to_end(&mut v).unwrap();
 
-        String::from_utf8(v).unwrap();
+        let text = unsafe { from_utf8_unchecked(&v) };
+
+        text.contains("figarofigaro")
     });
 }
 
 fn include_bytes_native_static(bencher: &mut Bencher) {
-    let data = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/", "data/benchmark.txt"));
+    let data = include_bytes!(benchmark_text_path!());
 
     bencher.iter(|| {
-        String::from_utf8(data.to_vec()).unwrap();
+        let text = unsafe { from_utf8_unchecked(data) };
+
+        text.contains("figarofigaro")
     });
 }
 
 fn include_bytes_lazy_static(bencher: &mut Bencher) {
-    lazy_static_include_bytes!(DATA, "data/benchmark.txt");
+    lazy_static_include_bytes! {
+        DATA => benchmark_text_path!(relative)
+    }
 
     bencher.iter(|| {
-        String::from_utf8((*DATA).to_vec()).unwrap();
+        let text = unsafe { from_utf8_unchecked(&DATA) };
+
+        text.contains("figarofigaro")
     });
 }
 
 fn include_array_no_static(bencher: &mut Bencher) {
-    let path = concat!(concat!(env!("CARGO_MANIFEST_DIR"), "/", "data/benchmark.txt"));
+    let path = concat!(benchmark_text_path!());
 
     bencher.iter(|| {
         let mut f = File::open(&path).unwrap();
@@ -85,24 +100,22 @@ fn include_array_no_static(bencher: &mut Bencher) {
 
         let array: Vec<&str> = serde_json::from_slice(&v).unwrap();
 
-        assert!(array.binary_search(&"figarofigaro").is_ok());
+        array.binary_search(&"figarofigaro").is_ok()
     });
 }
 
 fn include_array_native_static(bencher: &mut Bencher) {
-    let array = include!(concat!(env!("CARGO_MANIFEST_DIR"), "/", "data/benchmark.txt"));
+    let array = include!(benchmark_text_path!());
 
-    bencher.iter(|| {
-        assert!(array.binary_search(&"figarofigaro").is_ok());
-    });
+    bencher.iter(|| array.binary_search(&"figarofigaro").is_ok());
 }
 
 fn include_array_lazy_static(bencher: &mut Bencher) {
-    lazy_static_include_array!(ARRAY: [&'static str; 622], "data/benchmark.txt");
+    lazy_static_include_array! {
+        ARRAY: [&'static str; 622] => benchmark_text_path!(relative)
+    }
 
-    bencher.iter(|| {
-        assert!((*ARRAY).binary_search(&"figarofigaro").is_ok());
-    });
+    bencher.iter(|| ARRAY.binary_search(&"figarofigaro").is_ok());
 }
 
 benchmark_group!(

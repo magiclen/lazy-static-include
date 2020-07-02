@@ -1,13 +1,13 @@
 [package]
 name = "lazy-static-include"
-version = "2.3.0"
+version = "3.0.0"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2018"
 repository = "https://github.com/magiclen/lazy-static-include"
 homepage = "https://magiclen.org/lazy-static-include"
 keywords = ["lazy", "macro", "static", "include"]
 categories = ["memory-management", "rust-patterns"]
-description= "This crate provides `lazy_static_include_bytes` and `lazy_static_include_str` macros to replace `include_bytes` and `include_str` macros."
+description = "This crate provides `lazy_static_include_bytes` and `lazy_static_include_str` macros to replace `include_bytes` and `include_str` macros."
 readme = "README.md"
 license = "MIT"
 include = ["src/**/*", "Cargo.toml", "benches/bench.rs"]
@@ -18,8 +18,8 @@ branch = "master"
 
 [dependencies]
 lazy_static = "1.4"
-syn = {version = "1", features = ["full"]}
-starts-ends-with-caseless = "0.5"
+slash-formatter = "3"
+syn = { version = "1", features = ["full"] }
 
 [dev-dependencies]
 bencher = "0.1.5"
