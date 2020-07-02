@@ -2,13 +2,16 @@
 extern crate lazy_static_include;
 
 #[macro_use]
+extern crate slash_formatter;
+
+#[macro_use]
 extern crate assert_approx_eq;
 
 #[test]
 fn include_str() {
     lazy_static_include_str! {
-        TEST => "data/test.txt",
-        pub TEST2 => "data/test-2.txt",
+        TEST => concat_with_file_separator!("data", "test.txt"),
+        pub TEST2 => concat_with_file_separator!("data", "test-2.txt"),
     }
 
     let _data: &'static str = *TEST;
@@ -20,8 +23,8 @@ fn include_str() {
 #[test]
 fn include_bytes() {
     lazy_static_include_bytes! {
-        TEST => "data/test.txt",
-        pub TEST2 => "data/test-2.txt",
+        TEST => concat_with_file_separator!("data", "test.txt"),
+        pub TEST2 => concat_with_file_separator!("data", "test-2.txt"),
     }
 
     let _data: &'static [u8] = *TEST;
@@ -33,7 +36,7 @@ fn include_bytes() {
 #[test]
 fn include_array_isize() {
     lazy_static_include_array! {
-        TEST: [isize; 5] => "data/isize_array.txt",
+        TEST: [isize; 5] => concat_with_file_separator!("data", "isize_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -46,7 +49,7 @@ fn include_array_isize() {
 #[test]
 fn include_array_i8() {
     lazy_static_include_array! {
-        TEST: [i8; 5] => "data/i8_array.txt",
+        TEST: [i8; 5] => concat_with_file_separator!("data", "i8_array.txt"),
     }
 
     assert_eq!(12, TEST[0]);
@@ -59,7 +62,7 @@ fn include_array_i8() {
 #[test]
 fn include_array_i16() {
     lazy_static_include_array! {
-        TEST: [i16; 5] => "data/i16_array.txt",
+        TEST: [i16; 5] => concat_with_file_separator!("data", "i16_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -72,7 +75,7 @@ fn include_array_i16() {
 #[test]
 fn include_array_i32() {
     lazy_static_include_array! {
-        TEST: [i32; 5] => "data/i32_array.txt",
+        TEST: [i32; 5] => concat_with_file_separator!("data", "i32_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -85,7 +88,7 @@ fn include_array_i32() {
 #[test]
 fn include_array_i64() {
     lazy_static_include_array! {
-        pub TEST: [i64; 5] => "data/i64_array.txt",
+        pub TEST: [i64; 5] => concat_with_file_separator!("data", "i64_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -98,7 +101,7 @@ fn include_array_i64() {
 #[test]
 fn include_array_i128() {
     lazy_static_include_array! {
-        pub TEST: [i128; 5] => "data/i128_array.txt",
+        pub TEST: [i128; 5] => concat_with_file_separator!("data", "i128_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -111,7 +114,7 @@ fn include_array_i128() {
 #[test]
 fn include_array_usize() {
     lazy_static_include_array! {
-        pub TEST: [usize; 5] => "data/usize_array.txt",
+        pub TEST: [usize; 5] => concat_with_file_separator!("data", "usize_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -124,7 +127,7 @@ fn include_array_usize() {
 #[test]
 fn include_array_u8() {
     lazy_static_include_array! {
-        pub TEST: [u8; 5] => "data/u8_array.txt",
+        pub TEST: [u8; 5] => concat_with_file_separator!("data", "u8_array.txt"),
     }
 
     assert_eq!(12, TEST[0]);
@@ -137,7 +140,7 @@ fn include_array_u8() {
 #[test]
 fn include_array_u16() {
     lazy_static_include_array! {
-        TEST: [u16; 5] => "data/u16_array.txt",
+        TEST: [u16; 5] => concat_with_file_separator!("data", "u16_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -150,7 +153,7 @@ fn include_array_u16() {
 #[test]
 fn include_array_u32() {
     lazy_static_include_array! {
-        pub TEST: [u32; 5] => "data/u32_array.txt",
+        pub TEST: [u32; 5] => concat_with_file_separator!("data", "u32_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -163,7 +166,7 @@ fn include_array_u32() {
 #[test]
 fn include_array_u64() {
     lazy_static_include_array! {
-        TEST: [u64; 5] => "data/u64_array.txt",
+        TEST: [u64; 5] => concat_with_file_separator!("data", "u64_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -176,7 +179,7 @@ fn include_array_u64() {
 #[test]
 fn include_array_u128() {
     lazy_static_include_array! {
-        pub TEST: [u128; 5] => "data/u128_array.txt",
+        pub TEST: [u128; 5] => concat_with_file_separator!("data", "u128_array.txt"),
     }
 
     assert_eq!(123, TEST[0]);
@@ -189,7 +192,7 @@ fn include_array_u128() {
 #[test]
 fn include_array_f32() {
     lazy_static_include_array! {
-        pub TEST: [f32; 5] => "data/f32_array.txt",
+        pub TEST: [f32; 5] => concat_with_file_separator!("data", "f32_array.txt"),
     }
 
     assert_approx_eq!(123f32, TEST[0]);
@@ -202,7 +205,7 @@ fn include_array_f32() {
 #[test]
 fn include_array_f64() {
     lazy_static_include_array! {
-        pub TEST: [f64; 5] => "data/f64_array.txt",
+        pub TEST: [f64; 5] => concat_with_file_separator!("data", "f64_array.txt"),
     }
 
     assert_approx_eq!(123f64, TEST[0]);
@@ -215,7 +218,7 @@ fn include_array_f64() {
 #[test]
 fn include_array_char() {
     lazy_static_include_array! {
-        pub TEST: [char; 3] => "data/char_array.txt",
+        pub TEST: [char; 3] => concat_with_file_separator!("data", "char_array.txt"),
     }
 
     assert_eq!('a', TEST[0]);
@@ -226,7 +229,7 @@ fn include_array_char() {
 #[test]
 fn include_array_bool() {
     lazy_static_include_array! {
-        pub TEST: [bool; 3] => "data/bool_array.txt",
+        pub TEST: [bool; 3] => concat_with_file_separator!("data", "bool_array.txt"),
     }
 
     assert_eq!(false, TEST[0]);
@@ -237,7 +240,7 @@ fn include_array_bool() {
 #[test]
 fn include_array_string() {
     lazy_static_include_array! {
-        pub TEST: [&'static str; 3] => "data/string_array.txt",
+        pub TEST: [&'static str; 3] => concat_with_file_separator!("data", "string_array.txt"),
     }
 
     assert_eq!("Hi", TEST[0]);
