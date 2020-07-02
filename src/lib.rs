@@ -45,9 +45,9 @@ assert_eq!("This is just a test text.".as_bytes(), TEST);
 assert_eq!("Some text...".as_bytes(), TEST2);
 ```
 
-You should notice that the value created from `lazy_static_include_bytes` and `lazy_static_include_str` macros isn't equal to `&'static [u8]` or `&'static str` when you are not using the **release** profile. If you want to get an exact `&'static [u8]` or `&'static str` reference, you can **dereference** the value or just use the `as_ref` method.
+You should notice that the value created from `lazy_static_include_bytes` and `lazy_static_include_str` macros isn't equal to `&'static [u8]` or `&'static str`. If you want to get an exact `&'static [u8]` or `&'static str` reference, you can **dereference** the value.
 
-```rust,ignore
+```rust
 #[macro_use] extern crate lazy_static_include;
 
 lazy_static_include_bytes! {
@@ -55,13 +55,7 @@ lazy_static_include_bytes! {
     TEST => "data/test.txt",
 }
 
-#[cfg(debug_assertions)]
 let data: &'static [u8] = *TEST;
-
-#[cfg(not(debug_assertions))]
-let data: &'static [u8] = TEST;
-
-let data: &'static [u8] = TEST.as_ref();
 ```
 
 ## Include Array
@@ -100,18 +94,18 @@ assert_eq!("哈囉", TEST2[2]);
 Using static mechanisms makes your program faster. See my benchmark result below (AMD Ryzen 9 3900X 12-Core Processor 12C/24T 3.90GHz, ran on 2020/07/02):
 
 ```text
-test include_array_lazy_static   ... bench:          45 ns/iter (+/- 3)
-test include_array_native_static ... bench:          45 ns/iter (+/- 3)
-test include_array_no_static     ... bench:      20,959 ns/iter (+/- 295)
-test include_bytes_lazy_static   ... bench:         754 ns/iter (+/- 7)
-test include_bytes_native_static ... bench:         755 ns/iter (+/- 11)
-test include_bytes_no_static     ... bench:       4,560 ns/iter (+/- 179)
-test include_str_lazy_static     ... bench:         753 ns/iter (+/- 10)
-test include_str_native_static   ... bench:         755 ns/iter (+/- 7)
-test include_str_no_static       ... bench:       4,830 ns/iter (+/- 198)
+test include_array_lazy_static   ... bench:          46 ns/iter (+/- 3)
+test include_array_native_static ... bench:          48 ns/iter (+/- 3)
+test include_array_no_static     ... bench:      22,414 ns/iter (+/- 297)
+test include_bytes_lazy_static   ... bench:         844 ns/iter (+/- 3)
+test include_bytes_native_static ... bench:         863 ns/iter (+/- 5)
+test include_bytes_no_static     ... bench:       4,764 ns/iter (+/- 189)
+test include_str_lazy_static     ... bench:         857 ns/iter (+/- 8)
+test include_str_native_static   ... bench:         842 ns/iter (+/- 10)
+test include_str_no_static       ... bench:       4,837 ns/iter (+/- 145)
 ```
 
-When using the **release** profile, the performance of `lazy_static_include_*` is very close to `include_*` (in fast, they are the same). That means you don't need to worry about the overhead, but just enjoy the faster compilation time.
+When using the **release** profile, the performance of `lazy_static_include_*` is very close to `include_*`. That means you don't need to worry about the overhead, but just enjoy the faster compilation time.
 
 You can run the benchmark program by executing,
 

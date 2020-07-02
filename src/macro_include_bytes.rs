@@ -88,11 +88,56 @@ macro_rules! lazy_static_include_bytes {
 /// The file is located relative to the directory containing the manifest of your package.
 #[macro_export]
 macro_rules! lazy_static_include_bytes {
+    ( @impl $name:ident ) => {
+        impl<'a> ::std::cmp::PartialEq<&'a [u8]> for $name {
+            fn eq(&self, other: &&'a [u8]) -> bool {
+                (&*$name).eq(other)
+            }
+        }
+
+        impl ::std::cmp::PartialEq for $name {
+            fn eq(&self, other: &$name) -> bool {
+                true
+            }
+        }
+
+        impl<'a> ::std::cmp::PartialEq<$name> for &'a [u8] {
+            fn eq(&self, other: &$name) -> bool {
+                self.eq(&*$name)
+            }
+        }
+
+        impl ::std::fmt::Debug for $name {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                ::std::fmt::Debug::fmt(*$name, f)
+            }
+        }
+
+        impl<T> ::std::convert::AsRef<T> for $name
+        where
+            T: ?Sized,
+            [u8]: ::std::convert::AsRef<T>,
+        {
+            fn as_ref(&self) -> &T {
+                (*$name).as_ref()
+            }
+        }
+    };
     ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
-        static $name: &'static [u8] = include_bytes!($crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
+        $crate::lazy_static! {
+            $(#[$attr])*
+            static ref $name: &'static [u8] = include_bytes!($crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
+        }
+
+        $crate::lazy_static_include_bytes!(@impl $name);
     };
     ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
-        pub$(($($v)+))? static $name: &'static [u8] = include_bytes!($crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
+        $crate::lazy_static! {
+            $(#[$attr])*
+            pub$(($($v)+))? static ref $name: &'static [u8] = include_bytes!($crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
+        }
+
+        $crate::lazy_static_include_bytes!(@impl $name);
     };
     ( $($(#[$attr: meta])* $v:vis $name:ident => $path:expr),* $(,)* ) => {
         $(
