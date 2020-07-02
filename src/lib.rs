@@ -114,9 +114,11 @@ cargo bench
 ```
 */
 
-extern crate lazy_static;
+#[doc(hidden)]
+pub extern crate lazy_static;
 
-extern crate slash_formatter;
+#[doc(hidden)]
+pub extern crate slash_formatter;
 
 #[doc(hidden)]
 pub extern crate syn;
@@ -124,9 +126,3 @@ pub extern crate syn;
 mod macro_include_array;
 mod macro_include_bytes;
 mod macro_include_str;
-
-#[doc(hidden)]
-pub use lazy_static::lazy_static;
-
-#[doc(hidden)]
-pub use slash_formatter::concat_with_file_separator;

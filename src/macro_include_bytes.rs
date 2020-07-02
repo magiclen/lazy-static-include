@@ -44,7 +44,7 @@ macro_rules! lazy_static_include_bytes {
             use ::std::fs;
             use ::std::mem::{forget, transmute};
 
-            let path = $crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path);
+            let path = $crate::slash_formatter::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path);
 
             let data = fs::read(path).unwrap();
 
@@ -56,7 +56,7 @@ macro_rules! lazy_static_include_bytes {
         }
     };
     ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
-        $crate::lazy_static! {
+        $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             static ref $name: &'static [u8] = $crate::lazy_static_include_bytes!(@inner $name, $path);
         }
@@ -64,7 +64,7 @@ macro_rules! lazy_static_include_bytes {
         $crate::lazy_static_include_bytes!(@impl $name);
     };
     ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
-        $crate::lazy_static! {
+        $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             pub$(($($v)+))? static ref $name: &'static [u8] = $crate::lazy_static_include_bytes!(@inner $name, $path);
         }
@@ -124,17 +124,17 @@ macro_rules! lazy_static_include_bytes {
         }
     };
     ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
-        $crate::lazy_static! {
+        $crate::lazy_static::lazy_static! {
             $(#[$attr])*
-            static ref $name: &'static [u8] = include_bytes!($crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
+            static ref $name: &'static [u8] = include_bytes!($crate::slash_formatter::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
         }
 
         $crate::lazy_static_include_bytes!(@impl $name);
     };
     ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
-        $crate::lazy_static! {
+        $crate::lazy_static::lazy_static! {
             $(#[$attr])*
-            pub$(($($v)+))? static ref $name: &'static [u8] = include_bytes!($crate::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
+            pub$(($($v)+))? static ref $name: &'static [u8] = include_bytes!($crate::slash_formatter::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path));
         }
 
         $crate::lazy_static_include_bytes!(@impl $name);
