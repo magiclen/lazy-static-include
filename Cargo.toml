@@ -1,6 +1,6 @@
 [package]
 name = "lazy-static-include"
-version = "3.0.4"
+version = "3.0.5"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2018"
 repository = "https://github.com/magiclen/lazy-static-include"
@@ -10,7 +10,7 @@ categories = ["memory-management", "rust-patterns"]
 description = "This crate provides `lazy_static_include_bytes` and `lazy_static_include_str` macros to replace `include_bytes` and `include_str` macros."
 readme = "README.md"
 license = "MIT"
-include = ["src/**/*", "Cargo.toml", "benches/bench.rs"]
+include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE", "benches/bench.rs"]
 
 [badges.travis-ci]
 repository = "magiclen/lazy-static-include"
