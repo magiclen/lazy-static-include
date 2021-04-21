@@ -1,7 +1,7 @@
 Lazy Static Include
 ====================
 
-[![Build Status](https://travis-ci.org/magiclen/lazy-static-include.svg?branch=master)](https://travis-ci.org/magiclen/lazy-static-include)
+[![CI](https://github.com/magiclen/lazy-static-include/actions/workflows/ci.yml/badge.svg)](https://github.com/magiclen/lazy-static-include/actions/workflows/ci.yml)
 
 This crate provides `lazy_static_include_bytes` and `lazy_static_include_str` macros to replace `include_bytes` and `include_str` macros.
 

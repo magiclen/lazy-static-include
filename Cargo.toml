@@ -1,6 +1,6 @@
 [package]
 name = "lazy-static-include"
-version = "3.0.5"
+version = "3.0.6"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2018"
 repository = "https://github.com/magiclen/lazy-static-include"
@@ -11,10 +11,6 @@ description = "This crate provides `lazy_static_include_bytes` and `lazy_static_
 readme = "README.md"
 license = "MIT"
 include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE", "benches/bench.rs"]
-
-[badges.travis-ci]
-repository = "magiclen/lazy-static-include"
-branch = "master"
 
 [dependencies]
 lazy_static = "1.4"
