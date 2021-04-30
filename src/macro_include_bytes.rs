@@ -44,7 +44,7 @@ macro_rules! lazy_static_include_bytes {
             use ::std::fs;
             use ::std::mem::{forget, transmute};
 
-            let path = $crate::slash_formatter::concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), $path);
+            let path = $crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path);
 
             let data = fs::read(path).unwrap();
 
