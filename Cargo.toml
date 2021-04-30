@@ -1,6 +1,6 @@
 [package]
 name = "lazy-static-include"
-version = "3.0.6"
+version = "3.0.7"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2018"
 repository = "https://github.com/magiclen/lazy-static-include"
@@ -14,7 +14,7 @@ include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE", "benches/bench.rs"]
 
 [dependencies]
 lazy_static = "1.4"
-slash-formatter = "3"
+slash-formatter = "3.1"
 syn = { version = "1", features = ["full"] }
 
 [dev-dependencies]
