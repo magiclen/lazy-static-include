@@ -26,7 +26,7 @@ lazy_static_include_str! {
     /// doc
     TEST => "data/test.txt",
     /// doc
-    pub TEST2 => "data/test-2.txt",
+    pub TEST2 => ("data", "test-2.txt"),
 }
 
 assert_eq!("This is just a test text.", TEST);
@@ -40,7 +40,7 @@ lazy_static_include_bytes! {
     /// doc
     TEST => "data/test.txt",
     /// doc
-    pub TEST2 => "data/test-2.txt",
+    pub TEST2 => ("data", "test-2.txt"),
 }
 
 assert_eq!("This is just a test text.".as_bytes(), TEST);
@@ -77,7 +77,7 @@ lazy_static_include_array! {
     /// doc
     TEST: [u64; 5] => "data/u64_array.txt",
     /// doc
-    pub TEST2: [&'static str; 3] => "data/string_array.txt"
+    pub TEST2: [&'static str; 3] => ("data", "string_array.txt")
 }
 
 assert_eq!(123, TEST[0]);

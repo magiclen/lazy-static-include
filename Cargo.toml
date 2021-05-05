@@ -14,7 +14,7 @@ include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE", "benches/bench.rs"]
 
 [dependencies]
 lazy_static = "1.4"
-manifest-dir-macros = "0.1"
+manifest-dir-macros = { version = "0.1.6", features = ["tuple"] }
 syn = { version = "1", features = ["full"] }
 
 [dev-dependencies]
