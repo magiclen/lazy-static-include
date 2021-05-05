@@ -63,7 +63,7 @@ macro_rules! lazy_static_include_str {
             use ::std::fs;
             use ::std::mem::{forget, transmute};
 
-            let path = $crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path);
+            let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
             let text = fs::read_to_string(path).unwrap();
 
@@ -164,7 +164,7 @@ macro_rules! lazy_static_include_str {
     ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
-            static ref $name: &'static str = include_str!($crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path));
+            static ref $name: &'static str = include_str!($crate::manifest_dir_macros::path!($path));
         }
 
         $crate::lazy_static_include_str!(@impl $name);
@@ -172,7 +172,7 @@ macro_rules! lazy_static_include_str {
     ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
-            pub$(($($v)+))? static ref $name: &'static str = include_str!($crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path));
+            pub$(($($v)+))? static ref $name: &'static str = include_str!($crate::manifest_dir_macros::path!($path));
         }
 
         $crate::lazy_static_include_str!(@impl $name);

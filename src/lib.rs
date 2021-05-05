@@ -118,7 +118,7 @@ cargo bench
 pub extern crate lazy_static;
 
 #[doc(hidden)]
-pub extern crate slash_formatter;
+pub extern crate manifest_dir_macros;
 
 #[doc(hidden)]
 pub extern crate syn;

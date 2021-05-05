@@ -6,7 +6,7 @@
 macro_rules! lazy_static_include_array {
     ( @i $name:ident: [$t:ident; $s:expr], $path:expr ) => {
         {
-            let path = $crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path);
+            let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
             let text = ::std::fs::read_to_string(path).unwrap();
 
@@ -71,7 +71,7 @@ macro_rules! lazy_static_include_array {
     };
     ( @u $name:ident: [$t:ident; $s:expr], $path:expr ) => {
         {
-            let path = $crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path);
+            let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
             let text = ::std::fs::read_to_string(path).unwrap();
 
@@ -120,7 +120,7 @@ macro_rules! lazy_static_include_array {
     };
     ( @f $name:ident: [$t:ident; $s:expr], $path:expr ) => {
         {
-            let path = $crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path);
+            let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
             let text = ::std::fs::read_to_string(path).unwrap();
 
@@ -200,7 +200,7 @@ macro_rules! lazy_static_include_array {
     };
     ( @c $name:ident: [$t:ident; $s:expr], $path:expr ) => {
         {
-            let path = $crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path);
+            let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
             let text = ::std::fs::read_to_string(path).unwrap();
 
@@ -236,7 +236,7 @@ macro_rules! lazy_static_include_array {
     };
     ( @b $name:ident: [$t:ident; $s:expr], $path:expr ) => {
         {
-            let path = $crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path);
+            let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
             let text = ::std::fs::read_to_string(path).unwrap();
 
@@ -274,7 +274,7 @@ macro_rules! lazy_static_include_array {
         {
             use ::std::mem::{forget, transmute};
 
-            let path = $crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path);
+            let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
             let text = ::std::fs::read_to_string(path).unwrap();
 
@@ -404,13 +404,13 @@ macro_rules! lazy_static_include_array {
     ( @unit $(#[$attr: meta])* ($v:tt) $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
-            static ref $name: [$(& $lt)? $t; $s] = include!($crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path));
+            static ref $name: [$(& $lt)? $t; $s] = include!($crate::manifest_dir_macros::path!($path));
         }
     };
     ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
-            pub$(($($v)+))? static ref $name: [$(& $lt)? $t; $s] = include!($crate::slash_formatter::concat_with_file_separator_debug_release!(env!("CARGO_MANIFEST_DIR"), $path));
+            pub$(($($v)+))? static ref $name: [$(& $lt)? $t; $s] = include!($crate::manifest_dir_macros::path!($path));
         }
     };
     ( $($(#[$attr: meta])* $v:vis $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr),* $(,)* ) => {
