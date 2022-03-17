@@ -1,8 +1,7 @@
 #[macro_use]
 extern crate lazy_static_include;
 
-#[macro_use]
-extern crate assert_approx_eq;
+use assert_approx_eq::assert_approx_eq;
 
 #[test]
 fn include_str() {
@@ -229,9 +228,9 @@ fn include_array_bool() {
         pub TEST: [bool; 3] => "data/bool_array.txt",
     }
 
-    assert_eq!(false, TEST[0]);
-    assert_eq!(true, TEST[1]);
-    assert_eq!(false, TEST[2]);
+    assert!(!TEST[0]);
+    assert!(TEST[1]);
+    assert!(!TEST[2]);
 }
 
 #[test]

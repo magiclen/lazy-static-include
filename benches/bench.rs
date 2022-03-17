@@ -1,26 +1,16 @@
 #[macro_use]
-extern crate bencher;
-
-#[macro_use]
 extern crate lazy_static_include;
-
-#[macro_use]
-extern crate slash_formatter;
-
-extern crate serde_json;
 
 use std::fs::File;
 use std::io::Read;
 use std::str::from_utf8_unchecked;
 
-use bencher::Bencher;
+use bencher::{benchmark_group, benchmark_main, Bencher};
+use slash_formatter::concat_with_file_separator;
 
 macro_rules! benchmark_text_path {
     () => {
         concat_with_file_separator!(env!("CARGO_MANIFEST_DIR"), "data", "benchmark.txt")
-    };
-    (relative) => {
-        concat_with_file_separator!("data", "benchmark.txt")
     };
 }
 
@@ -46,7 +36,7 @@ fn include_str_native_static(bencher: &mut Bencher) {
 
 fn include_str_lazy_static(bencher: &mut Bencher) {
     lazy_static_include_str! {
-        pub TEXT => benchmark_text_path!(relative)
+        pub TEXT => "data/benchmark.txt"
     }
 
     bencher.iter(|| TEXT.contains("figarofigaro"));
@@ -78,7 +68,7 @@ fn include_bytes_native_static(bencher: &mut Bencher) {
 
 fn include_bytes_lazy_static(bencher: &mut Bencher) {
     lazy_static_include_bytes! {
-        DATA => benchmark_text_path!(relative)
+        DATA => "data/benchmark.txt"
     }
 
     bencher.iter(|| {
@@ -112,7 +102,7 @@ fn include_array_native_static(bencher: &mut Bencher) {
 
 fn include_array_lazy_static(bencher: &mut Bencher) {
     lazy_static_include_array! {
-        ARRAY: [&'static str; 622] => benchmark_text_path!(relative)
+        ARRAY: [&'static str; 622] => "data/benchmark.txt"
     }
 
     bencher.iter(|| ARRAY.binary_search(&"figarofigaro").is_ok());
