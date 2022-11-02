@@ -10,7 +10,7 @@ fn include_str() {
         pub TEST2 => "data/test-2.txt",
     }
 
-    let _data: &'static str = *TEST;
+    let _data: &'static str = &TEST;
 
     assert_eq!("This is just a test text.", TEST);
     assert_eq!("Some text...", TEST2);
@@ -23,7 +23,7 @@ fn include_bytes() {
         pub TEST2 => "data/test-2.txt",
     }
 
-    let _data: &'static [u8] = *TEST;
+    let _data: &'static [u8] = &TEST;
 
     assert_eq!("This is just a test text.".as_bytes(), TEST);
     assert_eq!("Some text...".as_bytes(), TEST2);

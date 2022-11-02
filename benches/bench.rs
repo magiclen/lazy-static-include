@@ -82,7 +82,7 @@ fn include_array_no_static(bencher: &mut Bencher) {
     let path = concat!(benchmark_text_path!());
 
     bencher.iter(|| {
-        let mut f = File::open(&path).unwrap();
+        let mut f = File::open(path).unwrap();
 
         let mut v = Vec::new();
 
