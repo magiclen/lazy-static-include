@@ -1,9 +1,7 @@
 #[macro_use]
 extern crate lazy_static_include;
 
-use std::fs::File;
-use std::io::Read;
-use std::str::from_utf8_unchecked;
+use std::{fs::File, io::Read, str::from_utf8_unchecked};
 
 use bencher::{benchmark_group, benchmark_main, Bencher};
 use slash_formatter::concat_with_file_separator;

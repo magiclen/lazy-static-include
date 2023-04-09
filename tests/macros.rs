@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate lazy_static_include;
 
-use assert_approx_eq::assert_approx_eq;
+use assert_eq_float::assert_eq_float;
 
 #[test]
 fn include_str() {
@@ -191,11 +191,11 @@ fn include_array_f32() {
         pub TEST: [f32; 5] => "data/f32_array.txt",
     }
 
-    assert_approx_eq!(123f32, TEST[0]);
-    assert_approx_eq!(-456f32, TEST[1]);
-    assert_approx_eq!(789.5f32, TEST[2]);
-    assert_approx_eq!(1000.123f32, TEST[3]);
-    assert_approx_eq!(5000f32, TEST[4]);
+    assert_eq_float!(123f32, TEST[0]);
+    assert_eq_float!(-456f32, TEST[1]);
+    assert_eq_float!(789.5f32, TEST[2]);
+    assert_eq_float!(1000.123f32, TEST[3]);
+    assert_eq_float!(5000f32, TEST[4]);
 }
 
 #[test]
@@ -204,11 +204,11 @@ fn include_array_f64() {
         pub TEST: [f64; 5] => "data/f64_array.txt",
     }
 
-    assert_approx_eq!(123f64, TEST[0]);
-    assert_approx_eq!(-456f64, TEST[1]);
-    assert_approx_eq!(789.5f64, TEST[2]);
-    assert_approx_eq!(1000.123f64, TEST[3]);
-    assert_approx_eq!(5000.456f64, TEST[4]);
+    assert_eq_float!(123f64, TEST[0]);
+    assert_eq_float!(-456f64, TEST[1]);
+    assert_eq_float!(789.5f64, TEST[2]);
+    assert_eq_float!(1000.123f64, TEST[3]);
+    assert_eq_float!(5000.456f64, TEST[4]);
 }
 
 #[test]
