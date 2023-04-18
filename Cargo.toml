@@ -1,6 +1,6 @@
 [package]
 name = "lazy-static-include"
-version = "3.1.3"
+version = "3.1.4"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2021"
 rust-version = "1.56"
@@ -15,7 +15,7 @@ include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE", "benches/bench.rs"]
 [dependencies]
 lazy_static = "1.4"
 manifest-dir-macros = { version = "0.1.6", features = ["tuple"] }
-syn = { version = "1", features = ["full"] }
+syn = { version = "2", features = ["full"] }
 
 [dev-dependencies]
 bencher = "0.1.5"
