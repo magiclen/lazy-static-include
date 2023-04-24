@@ -372,24 +372,33 @@ macro_rules! lazy_static_include_array {
     ( @type $name:ident: [&'static str; $s:expr], $path:expr ) => {
         $crate::lazy_static_include_array!(@s $name: [bool; $s], $path);
     };
-    ( @unit $(#[$attr: meta])* ($v:tt) $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             static ref $name: [$(& $lt)? $t; $s] = $crate::lazy_static_include_array!(@type $name: [$(& $lt)? $t; $s], $path);
         }
     };
-    ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             pub$(($($v)+))? static ref $name: [$(& $lt)? $t; $s] = $crate::lazy_static_include_array!(@type $name: [$(& $lt)? $t; $s], $path);
         }
     };
-    ( $($(#[$attr: meta])* $v:vis $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr),* $(,)* ) => {
+    ( $($(#[$attr: meta])* $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr),* $(,)* ) => {
         $(
             $crate::lazy_static_include_array! {
                 @unit
                 $(#[$attr])*
-                ($v) $name: [$(& $lt)? $t; $s] => $path
+                $name: [$(& $lt)? $t; $s] => $path
+            }
+        )*
+    };
+    ( $($(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr),* $(,)* ) => {
+        $(
+            $crate::lazy_static_include_array! {
+                @unit
+                $(#[$attr])*
+                pub$(($($v)+))? $name: [$(& $lt)? $t; $s] => $path
             }
         )*
     };
@@ -401,24 +410,33 @@ macro_rules! lazy_static_include_array {
 /// The file is located relative to the directory containing the manifest of your package.
 #[macro_export]
 macro_rules! lazy_static_include_array {
-    ( @unit $(#[$attr: meta])* ($v:tt) $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             static ref $name: [$(& $lt)? $t; $s] = include!($crate::manifest_dir_macros::path!($path));
         }
     };
-    ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             pub$(($($v)+))? static ref $name: [$(& $lt)? $t; $s] = include!($crate::manifest_dir_macros::path!($path));
         }
     };
-    ( $($(#[$attr: meta])* $v:vis $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr),* $(,)* ) => {
+    ( $($(#[$attr: meta])* $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr),* $(,)* ) => {
         $(
             $crate::lazy_static_include_array! {
                 @unit
                 $(#[$attr])*
-                ($v) $name: [$(& $lt)? $t; $s] => $path
+                $name: [$(& $lt)? $t; $s] => $path
+            }
+        )*
+    };
+    ( $($(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr),* $(,)* ) => {
+        $(
+            $crate::lazy_static_include_array! {
+                @unit
+                $(#[$attr])*
+                pub$(($($v)+))? $name: [$(& $lt)? $t; $s] => $path
             }
         )*
     };

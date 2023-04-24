@@ -18,11 +18,14 @@ The paths used for `lazy_static_include_bytes` and `lazy_static_include_str` are
 ## Examples
 
 ```rust
-#[macro_use] extern crate lazy_static_include;
+use lazy_static_include::*;
 
 lazy_static_include_str! {
     /// doc
     TEST => "data/test.txt",
+}
+
+lazy_static_include_str! {
     /// doc
     pub TEST2 => ("data", "test-2.txt"),
 }
@@ -32,11 +35,14 @@ assert_eq!("Some text...", TEST2);
 ```
 
 ```rust
-#[macro_use] extern crate lazy_static_include;
+use lazy_static_include::*;
 
 lazy_static_include_bytes! {
     /// doc
     TEST => "data/test.txt",
+}
+
+lazy_static_include_bytes! {
     /// doc
     pub TEST2 => ("data", "test-2.txt"),
 }
@@ -48,7 +54,7 @@ assert_eq!("Some text...".as_bytes(), TEST2);
 You should notice that the value created from `lazy_static_include_bytes` and `lazy_static_include_str` macros isn't equal to `&'static [u8]` or `&'static str`. If you want to get an exact `&'static [u8]` or `&'static str` reference, you can **dereference** the value.
 
 ```rust
-#[macro_use] extern crate lazy_static_include;
+use lazy_static_include::*;
 
 lazy_static_include_bytes! {
     /// doc
@@ -57,6 +63,8 @@ lazy_static_include_bytes! {
 
 let data: &'static [u8] = *TEST;
 ```
+
+Also, private items (without `pub`) and public items (with `pub*`) cannot be put together.
 
 ## Include Array
 
@@ -69,11 +77,14 @@ Be careful when you distribute your program.
 The paths used for `lazy_static_include_array` are relative to **CARGO_MANIFEST_DIR**.
 
 ```rust
-#[macro_use] extern crate lazy_static_include;
+use lazy_static_include::*;
 
 lazy_static_include_array! {
     /// doc
     TEST: [u64; 5] => "data/u64_array.txt",
+}
+
+lazy_static_include_array! {
     /// doc
     pub TEST2: [&'static str; 3] => ("data", "string_array.txt")
 }

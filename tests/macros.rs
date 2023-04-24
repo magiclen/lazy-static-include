@@ -1,16 +1,12 @@
-#[macro_use]
-extern crate lazy_static_include;
-
 use assert_eq_float::assert_eq_float;
+use lazy_static_include::*;
 
 #[test]
 fn include_str() {
     lazy_static_include_str! {
         TEST => "data/test.txt",
-        pub TEST2 => "data/test-2.txt",
+        TEST2 => "data/test-2.txt",
     }
-
-    let _data: &'static str = &TEST;
 
     assert_eq!("This is just a test text.", TEST);
     assert_eq!("Some text...", TEST2);
@@ -20,10 +16,8 @@ fn include_str() {
 fn include_bytes() {
     lazy_static_include_bytes! {
         TEST => "data/test.txt",
-        pub TEST2 => "data/test-2.txt",
+        TEST2 => "data/test-2.txt",
     }
-
-    let _data: &'static [u8] = &TEST;
 
     assert_eq!("This is just a test text.".as_bytes(), TEST);
     assert_eq!("Some text...".as_bytes(), TEST2);
@@ -84,7 +78,7 @@ fn include_array_i32() {
 #[test]
 fn include_array_i64() {
     lazy_static_include_array! {
-        pub TEST: [i64; 5] => "data/i64_array.txt",
+        TEST: [i64; 5] => "data/i64_array.txt",
     }
 
     assert_eq!(123, TEST[0]);
@@ -97,7 +91,7 @@ fn include_array_i64() {
 #[test]
 fn include_array_i128() {
     lazy_static_include_array! {
-        pub TEST: [i128; 5] => "data/i128_array.txt",
+        TEST: [i128; 5] => "data/i128_array.txt",
     }
 
     assert_eq!(123, TEST[0]);
@@ -110,7 +104,7 @@ fn include_array_i128() {
 #[test]
 fn include_array_usize() {
     lazy_static_include_array! {
-        pub TEST: [usize; 5] => "data/usize_array.txt",
+        TEST: [usize; 5] => "data/usize_array.txt",
     }
 
     assert_eq!(123, TEST[0]);
@@ -123,7 +117,7 @@ fn include_array_usize() {
 #[test]
 fn include_array_u8() {
     lazy_static_include_array! {
-        pub TEST: [u8; 5] => "data/u8_array.txt",
+        TEST: [u8; 5] => "data/u8_array.txt",
     }
 
     assert_eq!(12, TEST[0]);
@@ -149,7 +143,7 @@ fn include_array_u16() {
 #[test]
 fn include_array_u32() {
     lazy_static_include_array! {
-        pub TEST: [u32; 5] => "data/u32_array.txt",
+        TEST: [u32; 5] => "data/u32_array.txt",
     }
 
     assert_eq!(123, TEST[0]);
@@ -175,7 +169,7 @@ fn include_array_u64() {
 #[test]
 fn include_array_u128() {
     lazy_static_include_array! {
-        pub TEST: [u128; 5] => "data/u128_array.txt",
+        TEST: [u128; 5] => "data/u128_array.txt",
     }
 
     assert_eq!(123, TEST[0]);
@@ -188,7 +182,7 @@ fn include_array_u128() {
 #[test]
 fn include_array_f32() {
     lazy_static_include_array! {
-        pub TEST: [f32; 5] => "data/f32_array.txt",
+        TEST: [f32; 5] => "data/f32_array.txt",
     }
 
     assert_eq_float!(123f32, TEST[0]);
@@ -201,7 +195,7 @@ fn include_array_f32() {
 #[test]
 fn include_array_f64() {
     lazy_static_include_array! {
-        pub TEST: [f64; 5] => "data/f64_array.txt",
+        TEST: [f64; 5] => "data/f64_array.txt",
     }
 
     assert_eq_float!(123f64, TEST[0]);
@@ -214,7 +208,7 @@ fn include_array_f64() {
 #[test]
 fn include_array_char() {
     lazy_static_include_array! {
-        pub TEST: [char; 3] => "data/char_array.txt",
+        TEST: [char; 3] => "data/char_array.txt",
     }
 
     assert_eq!('a', TEST[0]);
@@ -225,7 +219,7 @@ fn include_array_char() {
 #[test]
 fn include_array_bool() {
     lazy_static_include_array! {
-        pub TEST: [bool; 3] => "data/bool_array.txt",
+        TEST: [bool; 3] => "data/bool_array.txt",
     }
 
     assert!(!TEST[0]);
@@ -236,7 +230,7 @@ fn include_array_bool() {
 #[test]
 fn include_array_string() {
     lazy_static_include_array! {
-        pub TEST: [&'static str; 3] => "data/string_array.txt",
+        TEST: [&'static str; 3] => "data/string_array.txt",
     }
 
     assert_eq!("Hi", TEST[0]);

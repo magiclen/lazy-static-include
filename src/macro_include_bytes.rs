@@ -55,7 +55,7 @@ macro_rules! lazy_static_include_bytes {
             }
         }
     };
-    ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             static ref $name: &'static [u8] = $crate::lazy_static_include_bytes!(@inner $name, $path);
@@ -63,7 +63,7 @@ macro_rules! lazy_static_include_bytes {
 
         $crate::lazy_static_include_bytes!(@impl $name);
     };
-    ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             pub$(($($v)+))? static ref $name: &'static [u8] = $crate::lazy_static_include_bytes!(@inner $name, $path);
@@ -71,12 +71,21 @@ macro_rules! lazy_static_include_bytes {
 
         $crate::lazy_static_include_bytes!(@impl $name);
     };
-    ( $($(#[$attr: meta])* $v:vis $name:ident => $path:expr),* $(,)* ) => {
+    ( $($(#[$attr: meta])* $name:ident => $path:expr),* $(,)* ) => {
         $(
             $crate::lazy_static_include_bytes! {
                 @unit
                 $(#[$attr])*
-                ($v) $name => $path
+                $name => $path
+            }
+        )*
+    };
+    ( $($(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident => $path:expr),* $(,)* ) => {
+        $(
+            $crate::lazy_static_include_bytes! {
+                @unit
+                $(#[$attr])*
+                pub$(($($v)+))? $name => $path
             }
         )*
     };
@@ -123,7 +132,7 @@ macro_rules! lazy_static_include_bytes {
             }
         }
     };
-    ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             static ref $name: &'static [u8] = include_bytes!($crate::manifest_dir_macros::path!($path));
@@ -131,7 +140,7 @@ macro_rules! lazy_static_include_bytes {
 
         $crate::lazy_static_include_bytes!(@impl $name);
     };
-    ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             pub$(($($v)+))? static ref $name: &'static [u8] = include_bytes!($crate::manifest_dir_macros::path!($path));
@@ -139,12 +148,21 @@ macro_rules! lazy_static_include_bytes {
 
         $crate::lazy_static_include_bytes!(@impl $name);
     };
-    ( $($(#[$attr: meta])* $v:vis $name:ident => $path:expr),* $(,)* ) => {
+    ( $($(#[$attr: meta])* $name:ident => $path:expr),* $(,)* ) => {
         $(
             $crate::lazy_static_include_bytes! {
                 @unit
                 $(#[$attr])*
-                ($v) $name => $path
+                $name => $path
+            }
+        )*
+    };
+    ( $($(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident => $path:expr),* $(,)* ) => {
+        $(
+            $crate::lazy_static_include_bytes! {
+                @unit
+                $(#[$attr])*
+                pub$(($($v)+))? $name => $path
             }
         )*
     };

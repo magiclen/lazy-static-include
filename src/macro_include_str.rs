@@ -74,7 +74,7 @@ macro_rules! lazy_static_include_str {
             }
         }
     };
-    ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             static ref $name: &'static str = $crate::lazy_static_include_str!(@inner $name, $path);
@@ -82,7 +82,7 @@ macro_rules! lazy_static_include_str {
 
         $crate::lazy_static_include_str!(@impl $name);
     };
-    ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             pub$(($($v)+))? static ref $name: &'static str = $crate::lazy_static_include_str!(@inner $name, $path);
@@ -90,12 +90,21 @@ macro_rules! lazy_static_include_str {
 
         $crate::lazy_static_include_str!(@impl $name);
     };
-    ( $($(#[$attr: meta])* $v:vis $name:ident => $path:expr),* $(,)* ) => {
+    ( $($(#[$attr: meta])* $name:ident => $path:expr),* $(,)* ) => {
         $(
             $crate::lazy_static_include_str! {
                 @unit
                 $(#[$attr])*
-                ($v) $name => $path
+                $name => $path
+            }
+        )*
+    };
+    ( $($(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident => $path:expr),* $(,)* ) => {
+        $(
+            $crate::lazy_static_include_str! {
+                @unit
+                $(#[$attr])*
+                pub$(($($v)+))? $name => $path
             }
         )*
     };
@@ -161,7 +170,7 @@ macro_rules! lazy_static_include_str {
             }
         }
     };
-    ( @unit $(#[$attr: meta])* ($v:tt) $name:ident => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
             static ref $name: &'static str = include_str!($crate::manifest_dir_macros::path!($path));
@@ -169,20 +178,37 @@ macro_rules! lazy_static_include_str {
 
         $crate::lazy_static_include_str!(@impl $name);
     };
-    ( @unit $(#[$attr: meta])* (pub$(($($v:tt)+))?) $name:ident => $path:expr ) => {
+    ( @unit $(#[$attr: meta])* pub $name:ident => $path:expr ) => {
         $crate::lazy_static::lazy_static! {
             $(#[$attr])*
-            pub$(($($v)+))? static ref $name: &'static str = include_str!($crate::manifest_dir_macros::path!($path));
+            pub static ref $name: &'static str = include_str!($crate::manifest_dir_macros::path!($path));
         }
 
         $crate::lazy_static_include_str!(@impl $name);
     };
-    ( $($(#[$attr: meta])* $v:vis $name:ident => $path:expr),* $(,)* ) => {
+    ( @unit $(#[$attr: meta])* pub($($vis:tt)+) $name:ident => $path:expr ) => {
+        $crate::lazy_static::lazy_static! {
+            $(#[$attr])*
+            pub($($vis)+) static ref $name: &'static str = include_str!($crate::manifest_dir_macros::path!($path));
+        }
+
+        $crate::lazy_static_include_str!(@impl $name);
+    };
+    ( $($(#[$attr: meta])* $name:ident => $path:expr),* $(,)* ) => {
         $(
             $crate::lazy_static_include_str! {
                 @unit
                 $(#[$attr])*
-                ($v) $name => $path
+                $name => $path
+            }
+        )*
+    };
+    ( $($(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident => $path:expr),* $(,)* ) => {
+        $(
+            $crate::lazy_static_include_str! {
+                @unit
+                $(#[$attr])*
+                pub$(($($v)+))? $name => $path
             }
         )*
     };
