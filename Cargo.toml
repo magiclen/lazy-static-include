@@ -1,9 +1,9 @@
 [package]
 name = "lazy-static-include"
-version = "3.2.0"
+version = "3.2.1"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2021"
-rust-version = "1.56"
+rust-version = "1.60"
 repository = "https://github.com/magiclen/lazy-static-include"
 homepage = "https://magiclen.org/lazy-static-include"
 keywords = ["lazy", "macro", "static", "include"]
