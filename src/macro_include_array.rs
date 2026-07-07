@@ -4,7 +4,7 @@
 /// The file is located relative to the directory containing the manifest of your package.
 #[macro_export]
 macro_rules! lazy_static_include_array {
-    ( @i $name:ident: [$t:ident; $s:expr], $path:expr ) => {
+    ( @i [$t:ident; $s:expr], $path:expr ) => {
         {
             let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
@@ -69,7 +69,7 @@ macro_rules! lazy_static_include_array {
             }
         }
     };
-    ( @u $name:ident: [$t:ident; $s:expr], $path:expr ) => {
+    ( @u [$t:ident; $s:expr], $path:expr ) => {
         {
             let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
@@ -84,8 +84,6 @@ macro_rules! lazy_static_include_array {
                     if i >= $s {
                         panic!("incorrect length, bigger than {}, file: {}", $s, path);
                     }
-
-                    let mut neg = false;
 
                     let exp = match l {
                         $crate::syn::Expr::Lit(exp) => exp,
@@ -118,7 +116,7 @@ macro_rules! lazy_static_include_array {
             }
         }
     };
-    ( @f $name:ident: [$t:ident; $s:expr], $path:expr ) => {
+    ( @f [$t:ident; $s:expr], $path:expr ) => {
         {
             let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
@@ -198,7 +196,7 @@ macro_rules! lazy_static_include_array {
             }
         }
     };
-    ( @c $name:ident: [$t:ident; $s:expr], $path:expr ) => {
+    ( @c [$t:ident; $s:expr], $path:expr ) => {
         {
             let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
@@ -234,7 +232,7 @@ macro_rules! lazy_static_include_array {
             }
         }
     };
-    ( @b $name:ident: [$t:ident; $s:expr], $path:expr ) => {
+    ( @b [$t:ident; $s:expr], $path:expr ) => {
         {
             let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
@@ -270,17 +268,15 @@ macro_rules! lazy_static_include_array {
             }
         }
     };
-    ( @s $name:ident: [$t:ident; $s:expr], $path:expr ) => {
+    ( @s [$s:expr], $path:expr ) => {
         {
-            use ::std::mem::{forget, transmute};
-
             let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
             let text = ::std::fs::read_to_string(path).unwrap();
 
             let s = text.trim();
 
-            let mut result = Vec::with_capacity($s);
+            let mut result: [&'static str; $s] = [""; $s];
 
             if let Ok($crate::syn::Expr::Array(array)) = $crate::syn::parse_str(s) {
                 for (i, l) in array.elems.into_iter().enumerate() {
@@ -291,7 +287,8 @@ macro_rules! lazy_static_include_array {
                     if let $crate::syn::Expr::Lit(exp) = l {
                         match exp.lit {
                             $crate::syn::Lit::Str(s) => {
-                                result.push(s.value());
+                                // Leak each string to get a `&'static str` reference, because the data needs to live as long as the program anyway.
+                                result[i] = s.value().leak();
                             }
                             _ => {
                                 panic!("incorrect element type, index = {}, file: {}", i, path);
@@ -302,87 +299,70 @@ macro_rules! lazy_static_include_array {
                     }
                 }
 
-                let mut result_str = [""; $s];
-
-                for (i, s) in result.iter().enumerate() {
-                    result_str[i] = unsafe {
-                        let ret = transmute(s.as_str());
-                        ret
-                    };
-                }
-
-                unsafe {
-                    forget(result);
-                };
-
-                result_str
+                result
             } else {
                 panic!("incorrect array, file: {}", path);
             }
         }
     };
-    ( @type $name:ident: [isize; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@i $name: [isize; $s], $path);
+    ( @type [isize; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@i [isize; $s], $path)
     };
-    ( @type $name:ident: [i8; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@i $name: [i8; $s], $path);
+    ( @type [i8; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@i [i8; $s], $path)
     };
-    ( @type $name:ident: [i16; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@i $name: [i16; $s], $path);
+    ( @type [i16; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@i [i16; $s], $path)
     };
-    ( @type $name:ident: [i32; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@i $name: [i32; $s], $path);
+    ( @type [i32; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@i [i32; $s], $path)
     };
-    ( @type $name:ident: [i64; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@i $name: [i64; $s], $path);
+    ( @type [i64; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@i [i64; $s], $path)
     };
-    ( @type $name:ident: [i128; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@i $name: [i128; $s], $path);
+    ( @type [i128; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@i [i128; $s], $path)
     };
-    ( @type $name:ident: [usize; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@u $name: [usize; $s], $path);
+    ( @type [usize; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@u [usize; $s], $path)
     };
-    ( @type $name:ident: [u8; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@u $name: [u8; $s], $path);
+    ( @type [u8; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@u [u8; $s], $path)
     };
-    ( @type $name:ident: [u16; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@u $name: [u16; $s], $path);
+    ( @type [u16; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@u [u16; $s], $path)
     };
-    ( @type $name:ident: [u32; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@u $name: [u32; $s], $path);
+    ( @type [u32; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@u [u32; $s], $path)
     };
-    ( @type $name:ident: [u64; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@u $name: [u64; $s], $path);
+    ( @type [u64; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@u [u64; $s], $path)
     };
-    ( @type $name:ident: [u128; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@u $name: [u128; $s], $path);
+    ( @type [u128; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@u [u128; $s], $path)
     };
-    ( @type $name:ident: [f32; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@f $name: [f32; $s], $path);
+    ( @type [f32; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@f [f32; $s], $path)
     };
-    ( @type $name:ident: [f64; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@f $name: [f64; $s], $path);
+    ( @type [f64; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@f [f64; $s], $path)
     };
-    ( @type $name:ident: [char; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@c $name: [char; $s], $path);
+    ( @type [char; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@c [char; $s], $path)
     };
-    ( @type $name:ident: [bool; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@b $name: [bool; $s], $path);
+    ( @type [bool; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@b [bool; $s], $path)
     };
-    ( @type $name:ident: [&'static str; $s:expr], $path:expr ) => {
-        $crate::lazy_static_include_array!(@s $name: [bool; $s], $path);
+    ( @type [&'static str; $s:expr], $path:expr ) => {
+        $crate::lazy_static_include_array!(@s [$s], $path)
     };
     ( @unit $(#[$attr: meta])* $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
-        $crate::lazy_static::lazy_static! {
-            $(#[$attr])*
-            static ref $name: [$(& $lt)? $t; $s] = $crate::lazy_static_include_array!(@type $name: [$(& $lt)? $t; $s], $path);
-        }
+        $(#[$attr])*
+        static $name: ::std::sync::LazyLock<[$(& $lt)? $t; $s]> = ::std::sync::LazyLock::new(|| $crate::lazy_static_include_array!(@type [$(& $lt)? $t; $s], $path));
     };
     ( @unit $(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
-        $crate::lazy_static::lazy_static! {
-            $(#[$attr])*
-            pub$(($($v)+))? static ref $name: [$(& $lt)? $t; $s] = $crate::lazy_static_include_array!(@type $name: [$(& $lt)? $t; $s], $path);
-        }
+        $(#[$attr])*
+        pub$(($($v)+))? static $name: ::std::sync::LazyLock<[$(& $lt)? $t; $s]> = ::std::sync::LazyLock::new(|| $crate::lazy_static_include_array!(@type [$(& $lt)? $t; $s], $path));
     };
     ( $($(#[$attr: meta])* $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr),* $(,)* ) => {
         $(
@@ -411,16 +391,12 @@ macro_rules! lazy_static_include_array {
 #[macro_export]
 macro_rules! lazy_static_include_array {
     ( @unit $(#[$attr: meta])* $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
-        $crate::lazy_static::lazy_static! {
-            $(#[$attr])*
-            static ref $name: [$(& $lt)? $t; $s] = include!($crate::manifest_dir_macros::path!($path));
-        }
+        $(#[$attr])*
+        static $name: ::std::sync::LazyLock<[$(& $lt)? $t; $s]> = ::std::sync::LazyLock::new(|| include!($crate::manifest_dir_macros::path!($path)));
     };
     ( @unit $(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr ) => {
-        $crate::lazy_static::lazy_static! {
-            $(#[$attr])*
-            pub$(($($v)+))? static ref $name: [$(& $lt)? $t; $s] = include!($crate::manifest_dir_macros::path!($path));
-        }
+        $(#[$attr])*
+        pub$(($($v)+))? static $name: ::std::sync::LazyLock<[$(& $lt)? $t; $s]> = ::std::sync::LazyLock::new(|| include!($crate::manifest_dir_macros::path!($path)));
     };
     ( $($(#[$attr: meta])* $name:ident: [$(& $lt:lifetime)? $t:ident; $s:expr] => $path:expr),* $(,)* ) => {
         $(

@@ -3,7 +3,7 @@ extern crate lazy_static_include;
 
 use std::{fs::File, io::Read, str::from_utf8_unchecked};
 
-use bencher::{benchmark_group, benchmark_main, Bencher};
+use bencher::{Bencher, benchmark_group, benchmark_main};
 use slash_formatter::concat_with_file_separator;
 
 macro_rules! benchmark_text_path {

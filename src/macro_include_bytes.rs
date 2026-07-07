@@ -4,72 +4,23 @@
 /// The file is located relative to the directory containing the manifest of your package.
 #[macro_export]
 macro_rules! lazy_static_include_bytes {
-    ( @impl $name:ident ) => {
-        impl<'a> ::std::cmp::PartialEq<&'a [u8]> for $name {
-            fn eq(&self, other: &&'a [u8]) -> bool {
-                (&*$name).eq(other)
-            }
-        }
-
-        impl ::std::cmp::PartialEq for $name {
-            fn eq(&self, other: &$name) -> bool {
-                true
-            }
-        }
-
-        impl<'a> ::std::cmp::PartialEq<$name> for &'a [u8] {
-            fn eq(&self, other: &$name) -> bool {
-                self.eq(&*$name)
-            }
-        }
-
-        impl ::std::fmt::Debug for $name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                ::std::fmt::Debug::fmt(*$name, f)
-            }
-        }
-
-        impl<T> ::std::convert::AsRef<T> for $name
-        where
-            T: ?Sized,
-            [u8]: ::std::convert::AsRef<T>,
+    ( @inner $path:expr ) => {
         {
-            fn as_ref(&self) -> &T {
-                (*$name).as_ref()
-            }
-        }
-    };
-    ( @inner $name:ident, $path:expr ) => {
-        {
-            use ::std::fs;
-            use ::std::mem::{forget, transmute};
-
             let path = $crate::manifest_dir_macros::not_directory_path!($path);
 
-            let data = fs::read(path).unwrap();
+            // Leak the file content to get a `&'static [u8]` reference, because the data needs to live as long as the program anyway.
+            let data: &'static [u8] = ::std::fs::read(path).unwrap().leak();
 
-            unsafe {
-                let ret = transmute(data.as_slice());
-                forget(data);
-                ret
-            }
+            data
         }
     };
     ( @unit $(#[$attr: meta])* $name:ident => $path:expr ) => {
-        $crate::lazy_static::lazy_static! {
-            $(#[$attr])*
-            static ref $name: &'static [u8] = $crate::lazy_static_include_bytes!(@inner $name, $path);
-        }
-
-        $crate::lazy_static_include_bytes!(@impl $name);
+        $(#[$attr])*
+        static $name: ::std::sync::LazyLock<&'static [u8]> = ::std::sync::LazyLock::new(|| $crate::lazy_static_include_bytes!(@inner $path));
     };
     ( @unit $(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident => $path:expr ) => {
-        $crate::lazy_static::lazy_static! {
-            $(#[$attr])*
-            pub$(($($v)+))? static ref $name: &'static [u8] = $crate::lazy_static_include_bytes!(@inner $name, $path);
-        }
-
-        $crate::lazy_static_include_bytes!(@impl $name);
+        $(#[$attr])*
+        pub$(($($v)+))? static $name: ::std::sync::LazyLock<&'static [u8]> = ::std::sync::LazyLock::new(|| $crate::lazy_static_include_bytes!(@inner $path));
     };
     ( $($(#[$attr: meta])* $name:ident => $path:expr),* $(,)* ) => {
         $(
@@ -97,56 +48,13 @@ macro_rules! lazy_static_include_bytes {
 /// The file is located relative to the directory containing the manifest of your package.
 #[macro_export]
 macro_rules! lazy_static_include_bytes {
-    ( @impl $name:ident ) => {
-        impl<'a> ::std::cmp::PartialEq<&'a [u8]> for $name {
-            fn eq(&self, other: &&'a [u8]) -> bool {
-                (&*$name).eq(other)
-            }
-        }
-
-        impl ::std::cmp::PartialEq for $name {
-            fn eq(&self, other: &$name) -> bool {
-                true
-            }
-        }
-
-        impl<'a> ::std::cmp::PartialEq<$name> for &'a [u8] {
-            fn eq(&self, other: &$name) -> bool {
-                self.eq(&*$name)
-            }
-        }
-
-        impl ::std::fmt::Debug for $name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                ::std::fmt::Debug::fmt(*$name, f)
-            }
-        }
-
-        impl<T> ::std::convert::AsRef<T> for $name
-        where
-            T: ?Sized,
-            [u8]: ::std::convert::AsRef<T>,
-        {
-            fn as_ref(&self) -> &T {
-                (*$name).as_ref()
-            }
-        }
-    };
     ( @unit $(#[$attr: meta])* $name:ident => $path:expr ) => {
-        $crate::lazy_static::lazy_static! {
-            $(#[$attr])*
-            static ref $name: &'static [u8] = include_bytes!($crate::manifest_dir_macros::path!($path));
-        }
-
-        $crate::lazy_static_include_bytes!(@impl $name);
+        $(#[$attr])*
+        static $name: ::std::sync::LazyLock<&'static [u8]> = ::std::sync::LazyLock::new(|| include_bytes!($crate::manifest_dir_macros::path!($path)));
     };
     ( @unit $(#[$attr: meta])* pub$(($($v:tt)+))? $name:ident => $path:expr ) => {
-        $crate::lazy_static::lazy_static! {
-            $(#[$attr])*
-            pub$(($($v)+))? static ref $name: &'static [u8] = include_bytes!($crate::manifest_dir_macros::path!($path));
-        }
-
-        $crate::lazy_static_include_bytes!(@impl $name);
+        $(#[$attr])*
+        pub$(($($v)+))? static $name: ::std::sync::LazyLock<&'static [u8]> = ::std::sync::LazyLock::new(|| include_bytes!($crate::manifest_dir_macros::path!($path)));
     };
     ( $($(#[$attr: meta])* $name:ident => $path:expr),* $(,)* ) => {
         $(

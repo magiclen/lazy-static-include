@@ -30,8 +30,8 @@ lazy_static_include_str! {
     pub TEST2 => ("data", "test-2.txt"),
 }
 
-assert_eq!("This is just a test text.", TEST);
-assert_eq!("Some text...", TEST2);
+assert_eq!("This is just a test text.", *TEST);
+assert_eq!("Some text...", *TEST2);
 ```
 
 ```rust
@@ -47,11 +47,11 @@ lazy_static_include_bytes! {
     pub TEST2 => ("data", "test-2.txt"),
 }
 
-assert_eq!("This is just a test text.".as_bytes(), TEST);
-assert_eq!("Some text...".as_bytes(), TEST2);
+assert_eq!("This is just a test text.".as_bytes(), *TEST);
+assert_eq!("Some text...".as_bytes(), *TEST2);
 ```
 
-You should notice that the value created from `lazy_static_include_bytes` and `lazy_static_include_str` macros isn't equal to `&'static [u8]` or `&'static str`. If you want to get an exact `&'static [u8]` or `&'static str` reference, you can **dereference** the value.
+The values created from `lazy_static_include_bytes` and `lazy_static_include_str` macros are `LazyLock<&'static [u8]>` and `LazyLock<&'static str>` instances. If you want to get an exact `&'static [u8]` or `&'static str` reference, you need to **dereference** the value.
 
 ```rust
 use lazy_static_include::*;
@@ -124,9 +124,6 @@ You can run the benchmark program by executing,
 cargo bench
 ```
 */
-
-#[doc(hidden)]
-pub extern crate lazy_static;
 
 #[doc(hidden)]
 pub extern crate manifest_dir_macros;

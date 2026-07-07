@@ -8,8 +8,8 @@ fn include_str() {
         TEST2 => "data/test-2.txt",
     }
 
-    assert_eq!("This is just a test text.", TEST);
-    assert_eq!("Some text...", TEST2);
+    assert_eq!("This is just a test text.", *TEST);
+    assert_eq!("Some text...", *TEST2);
 }
 
 #[test]
@@ -19,8 +19,8 @@ fn include_bytes() {
         TEST2 => "data/test-2.txt",
     }
 
-    assert_eq!("This is just a test text.".as_bytes(), TEST);
-    assert_eq!("Some text...".as_bytes(), TEST2);
+    assert_eq!("This is just a test text.".as_bytes(), *TEST);
+    assert_eq!("Some text...".as_bytes(), *TEST2);
 }
 
 #[test]
